@@ -1,9 +1,11 @@
 from django.db import models
+from django.shortcuts import reverse
 
 control_status = [
     (0, 'w przygotowaniu'),
     (1, 'w trakcie'),
-    (2, 'zakończona'),
+    (2, 'procedowanie uwag do wyniku'),
+    (3, 'zakończona'),
 ]
 
 class QuestionBlock (models.Model):
@@ -46,7 +48,7 @@ class Control (models.Model):
     date_start = models.DateTimeField()
     date_end = models.DateTimeField()
     checklist = models.ForeignKey(to=Checklist, null=True, on_delete=models.SET_NULL, related_name='controls')
-    status = models.IntegerField(choices=control_status)
+    status = models.IntegerField(choices=control_status, default=0)
 
 
 class ResultInfo (models.Model):

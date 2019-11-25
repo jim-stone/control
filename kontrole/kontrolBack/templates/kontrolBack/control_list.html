@@ -1,0 +1,46 @@
+{% extends 'kontrolBack/base.html' %}
+
+{% block content %}
+<div class="row d-flex justify-content-center">
+<div class="col-md-8">
+    <br>
+    <h2 class="m-4">Dostępne kontrole</h2>
+
+    <div class="row m-4 header">
+        <div class="col-md-2 font-weight-bold">Kontrolujący </div>
+        <div class="col-md-2 font-weight-bold">Kontrolowany</div>
+        <div class="col-md-3 font-weight-bold">Przedmiot kontroli</div>
+        <div class="col-md-3 font-weight-bold">Status</div>
+        <div class="col-md-1 font-weight-bold"></div>
+    </div>
+    <hr>
+    
+    {% for c in controls %}
+
+    <div class="row m-4">
+        <div class="col-md-2">
+            {{ c.controlling_institution}}
+        </div>
+        <div class="col-md-2">
+            {{ c.controlled_institution }}
+        </div>
+        <div class="col-md-3">
+            {{ c.subject }}
+        </div>
+        <div class="col-md-3">
+            {{ c.get_status_display }}
+        </div>
+        <div class="col-md-1">
+            <button class="btn btn-outline-primary btn-sm">Szczegóły</button>
+        </div>
+    </div>
+    <hr>
+
+    {% empty %}
+    <p>Nie znaleziono konttroli dostępnych dla użytkownika.</p>
+
+    {% endfor %}
+
+</div>
+</div>
+{% endblock content %}
