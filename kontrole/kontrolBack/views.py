@@ -1,8 +1,8 @@
 from django.shortcuts import render, reverse
 from django.views import View
-from django.views.generic import ListView, CreateView
-from .models import Control
-
+from django.views.generic import ListView, CreateView, DetailView
+from .models import Control, Question, Checklist
+from .forms import AddQuestionToListForm
 
 class IndexView(View):
     def get(self, request):
@@ -20,4 +20,37 @@ class ControlListView (ListView):
     context_object_name = 'controls'
 
 
+class QuestionListView(ListView):
+    model = Question
+    context_object_name = 'questions'
+    queryset = Question.objects.all().order_by('block__name', 'name')
+    paginate_by = 150
+
+
+class ChecklistAddView(CreateView):
+    model = Checklist
+    fields = ['name']
+    success_url = 'listy'
+
+    
+
+class ChecklistListView(ListView):
+    model = Checklist    
+    context_object_name = 'checklists'
+    queryset = Checklist.objects.all().order_by('name')
+    paginate_by = 150
+
+class ChecklistDetailView(View):
+    # model = Checklist
+    # context_object_name = 'checklist'
+    # template_name = 'kontrolBack/checklist_detail.html'
+
+    def get (self, request, pk):
+        ctx = {}
+        checklist = Checklist.objects.get(pk=pk)
+        form = AddQuestionToListForm()
+        ctx['checklist'] = checklist
+        ctx['form'] = form
+        print (form)
+        return render(request, 'kontrolBack/checklist_detail.html', ctx)
 

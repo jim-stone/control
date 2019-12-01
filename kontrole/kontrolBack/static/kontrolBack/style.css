@@ -3,3 +3,12 @@
     margin: 10px;
     padding: 10px;
 }
+
+
+.form-check {
+    display: none;
+}
+
+h2 {
+    color: midnightblue;
+}

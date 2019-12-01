@@ -1,0 +1,16 @@
+{% extends 'kontrolBack/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="row d-flex justify-content-center">
+<div class="col-md-6">
+    <br>
+    <h2 class="m-4">Nowa lista sprawdzająca</h2>
+    <form method="POST" class="m-4" novalidate>
+            {% csrf_token %}
+            {{ form|crispy }}
+            <button type="submit" class="btn btn-outline-success float-right">Zapisz</button>
+    </form>
+</div>
+</div>
+{% endblock content %}

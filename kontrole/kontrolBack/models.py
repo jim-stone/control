@@ -8,6 +8,15 @@ control_status = [
     (3, 'zakończona'),
 ]
 
+
+class Institution (models.Model):
+    name = models.CharField(max_length=255, unique=True)
+    def __repr__(self):
+        return self.name
+    def __str__(self):
+        return self.name
+
+
 class QuestionBlock (models.Model):
     name = models.CharField(max_length=255, unique=True)
 
@@ -27,17 +36,13 @@ class Question (models.Model):
         return self.name
 
 
-class Institution (models.Model):
-    name = models.CharField(max_length=255, unique=True)
-    def __repr__(self):
-        return self.name
-    def __str__(self):
-        return self.name
-
 # założenie: 1 checklista do 1 kontroli
 
 class Checklist(models.Model):
-    questions = models.ManyToManyField(to=Question)
+    name = models.CharField(max_length=255)
+
+    def get_absolute_url(self,*args,**kwargs):
+        return reverse('checklist_detail',kwargs={'pk': self.pk})
 
 
 class Control (models.Model):
@@ -51,6 +56,22 @@ class Control (models.Model):
     status = models.IntegerField(choices=control_status, default=0)
 
 
+# pytanie wybrane do listy jest dla niej "mrożone"
+# tj. nie zmienia się po zmianie pytania bazowego w modelu Question
+# i tak samo jest z blokiem
+
+class QuestionInList (models.Model):
+    question_name = models.CharField(max_length=500)
+    block_name = models.CharField(max_length=255)
+    checklist = models.ForeignKey(to=Checklist, related_name='questions', on_delete=models.CASCADE)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['question_name', 'checklist'],
+            name="dont_repeat_question_in_checklist")
+        ]
+
+
 class ResultInfo (models.Model):
     control = models.OneToOneField(to=Control, on_delete=models.CASCADE)
 
@@ -60,7 +81,7 @@ class Recommendation (models.Model):
 
 
 class Comment (models.Model):
-    question = models.ForeignKey(to=Question, on_delete=models.DO_NOTHING, related_name='comments')
+    question = models.ForeignKey(to=QuestionInList, on_delete=models.DO_NOTHING, related_name='comments')
     checklist = models.ForeignKey(to=Checklist, on_delete=models.CASCADE, related_name='comments')
 
     class Meta:
