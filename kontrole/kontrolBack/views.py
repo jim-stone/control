@@ -1,8 +1,9 @@
 from django.shortcuts import render, reverse
 from django.views import View
 from django.views.generic import ListView, CreateView, DetailView
-from .models import Control, Question, Checklist
+from .models import Control, Question, QuestionBlock, Checklist, QuestionInList
 from .forms import AddQuestionToListForm
+from django.http import HttpResponse
 
 class IndexView(View):
     def get(self, request):
@@ -50,7 +51,32 @@ class ChecklistDetailView(View):
         checklist = Checklist.objects.get(pk=pk)
         form = AddQuestionToListForm()
         ctx['checklist'] = checklist
+        print(checklist.questions.all())
         ctx['form'] = form
-        print (form)
         return render(request, 'kontrolBack/checklist_detail.html', ctx)
+
+    def post(self, request, pk):
+        ctx = {}
+        checklist = Checklist.objects.get(pk=pk)
+        form = AddQuestionToListForm(request.POST)
+        if form.is_valid():
+            block = QuestionBlock.objects.get(pk = int(form.cleaned_data.get('block')))
+            questions = Question.objects.filter(pk__in=(form.cleaned_data.get('questions')))
+            objs_to_create = [
+                QuestionInList(question_name=q, block_name=block, checklist=checklist)\
+                    for q in questions
+                ]
+            QuestionInList.objects.bulk_create(objs_to_create)
+            print ([q.checklist.name for q in QuestionInList.objects.all()])
+
+        return render(request, 'kontrolBack/checklist_detail.html', ctx)
+        # return HttpResponse ('Done')
+
+
+
+
+
+
+
+
 
