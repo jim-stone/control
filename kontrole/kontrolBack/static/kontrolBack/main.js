@@ -1,18 +1,22 @@
 
 
-let allQuestions;
+// let allQuestions;
 
-function getQBs () {
+// function getQBs () {
 
-    fetch('/api/blocks')
-        .then(function(response) {return response.json()})
-        .then(function(data) {console.log (data);})
-};
+//     fetch('/api/blocks')
+//         .then(function(response) {return response.json()})
+//         .then(function(data) {console.log (data);})
+// };
 
 // let selectBlock = document.querySelector('#id_block');
 // selectBlock.classList.add('custom-select');
 
-
+let block = document.querySelector('#id_block')
+document.onload = function (ev) {
+    block.value = '';
+    console.log ('loaded...');
+}
 
 
 // get all questions
@@ -21,8 +25,18 @@ function getQuestions () {
         .then(response => response.json())
         .then(data => {
             let block = document.querySelector('#id_block');
+
             block.onchange = function() {
                 let selectedBlock = block.options[block.selectedIndex].value;
+                
+                let allOptions = document.getElementsByClassName('form-check-input');
+                // console.log(allOptions);
+                
+                let k;
+                for (k = 0; k < allOptions.length; k++) {
+                    allOptions[k].checked = false;
+                };
+                
                 let relevantQuestions = data
                     .filter(question => {return question.block == selectedBlock})
                     .map(question => String(question.id))

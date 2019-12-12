@@ -66,17 +66,34 @@
                             <a class="dropdown-item" href="#">Wypełnij informację pokontolną</a>
                         </div>
                     </li>
-
-                    <li class="nav-item">   
-                      <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Zaloguj</a>
-                    </li>
                   </ul>
-                  <form class="form-inline my-2 my-lg-0">
-                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-                  </form>
+
+                  <!-- informacja o zalogowanym użytkowniku -->
+
+                  {% if user.is_authenticated %}
+                  <div class="navbar-text float-right">Zalogowany: {{ user }}</div>
+                  <a class="nav-link" href="/logout" tabindex="-1" aria-disabled="true">Wyloguj</a>
+
+                  {% else %}
+                  <div class="navbar-text float-right">Niezalogowany</div>
+                  <a class="nav-link" href="/login" tabindex="-1" aria-disabled="true">Zaloguj</a>
+
+                  {% endif %}
+
+
+                                    
                 </div>
         </nav>
+    
+    {% if messages %}    
+          {% for message in messages%}
+          <div class="{{message.tags}} alert alert-info alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><br>
+            {{message|safe}}
+          </div>
+          {% endfor %}
+        </ul>
+    {% endif %}
 
     <!-- CONTENT START -->
     {% block content %}

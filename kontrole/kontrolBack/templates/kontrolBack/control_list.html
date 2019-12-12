@@ -19,10 +19,10 @@
 
     <div class="row m-4">
         <div class="col-md-2">
-            {{ c.controlling_institution}}
+            {{ c.controlling}}
         </div>
         <div class="col-md-2">
-            {{ c.controlled_institution }}
+            {{ c.controlled}}
         </div>
         <div class="col-md-3">
             {{ c.subject }}
@@ -31,7 +31,7 @@
             {{ c.get_status_display }}
         </div>
         <div class="col-md-1">
-            <button class="btn btn-outline-primary btn-sm">Szczegóły</button>
+            <a class="btn btn-outline-primary btn-sm" href="{% url 'control_edit' pk=c.pk %}">Edytuj</a>
         </div>
     </div>
     <hr>

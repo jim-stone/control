@@ -1,20 +1,38 @@
 from django.db import models
 from django.shortcuts import reverse
+from django.contrib.auth.models import User
+
 
 control_status = [
     (0, 'w przygotowaniu'),
     (1, 'w trakcie'),
-    (2, 'procedowanie uwag do wyniku'),
+    (2, 'w procesie zgłaszania uwag do wyniku'),
     (3, 'zakończona'),
 ]
 
 
 class Institution (models.Model):
-    name = models.CharField(max_length=255, unique=True)
+    name = models.CharField(max_length=512, unique=True)
+
     def __repr__(self):
         return self.name
     def __str__(self):
         return self.name
+
+class InstitutionEmployee(models.Model):
+    user = models.OneToOneField(to=User, on_delete=models.CASCADE)
+    institution = models.ForeignKey(to=Institution, on_delete=models.CASCADE)
+
+
+class ProjectParticipant(models.Model):
+    name = models.CharField(max_length=512)
+
+class Project(models.Model):
+    name = models.CharField(max_length=512)
+    value = models.DecimalField(max_digits=15, decimal_places=2, null=True)
+    description = models.CharField(max_length=3000, null=True)
+    beneficiary = models.ForeignKey(to=ProjectParticipant, related_name='projects_as_benef', on_delete=models.PROTECT)
+    partners = models.ManyToManyField(to=ProjectParticipant, related_name='projects_as_partner') 
 
 
 class QuestionBlock (models.Model):
@@ -36,20 +54,23 @@ class Question (models.Model):
         return self.name
 
 
-# założenie: 1 checklista do 1 kontroli
+# założenie: 1 checklista do 1 kontroli w potencjalniei wielu podmiotach
 
 class Checklist(models.Model):
     name = models.CharField(max_length=255)
+    created = models.DateTimeField(auto_now_add=True, null=True)
 
     def get_absolute_url(self,*args,**kwargs):
         return reverse('checklist_detail',kwargs={'pk': self.pk})
 
+    def __str__(self):
+        return self.name
 
 class Control (models.Model):
-    goal = models.CharField(max_length=2000)
+    name = models.CharField(max_length=2000)
     subject = models.CharField(max_length=2000)
-    controlling_institution = models.ForeignKey(to=Institution, related_name="controls_by", on_delete=models.DO_NOTHING)
-    controlled_institution = models.ForeignKey(to=Institution, related_name="controls_at", on_delete=models.DO_NOTHING)
+    controlling = models.ForeignKey(to=Institution, related_name="controls_by", on_delete=models.DO_NOTHING)
+    controlled = models.ManyToManyField(to=ProjectParticipant, related_name="controls_at")
     date_start = models.DateTimeField()
     date_end = models.DateTimeField()
     checklist = models.ForeignKey(to=Checklist, null=True, on_delete=models.SET_NULL, related_name='controls')
@@ -73,11 +94,15 @@ class QuestionInList (models.Model):
 
 
 class ResultInfo (models.Model):
-    control = models.OneToOneField(to=Control, on_delete=models.CASCADE)
+    control = models.OneToOneField(to=Control, on_delete=models.PROTECT)
 
+class Finding(models.Model):
+    result_info = models.ForeignKey(to=ResultInfo, related_name='findings', on_delete=models.PROTECT)
+    content = models.CharField(max_length=10000)
 
 class Recommendation (models.Model):
-    result_info = models.ForeignKey(to=ResultInfo, related_name='recommendations', on_delete=models.CASCADE)
+    result_info = models.ForeignKey(to=ResultInfo, related_name='recommendations', on_delete=models.PROTECT)
+    content = models.CharField(max_length=10000)
 
 
 class Comment (models.Model):

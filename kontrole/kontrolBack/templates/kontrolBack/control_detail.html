@@ -1,0 +1,33 @@
+{% extends 'kontrolBack/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<div class="row d-flex justify-content-center">
+<div class="col-md-8">
+    <br>
+    <h2 class="m-4">Szczegóły kontroli: {{control.name}}</h2>
+  
+    <form action="" method="POST">
+  
+    <!-- <form action="" method="POST"> -->
+        {% csrf_token %}
+        {{ form|crispy}}
+        <div>
+            {{ form.goal|as_crispy_field }}
+        </div>
+    
+
+        <div>
+            {{ form.subject|as_crispy_field }}
+        </div>
+
+        <a class="btn btn-outline-danger float-left" href=""> Anuluj </a>
+        <input type="submit" class="btn btn-outline-success float-right" id="change_control_data" value="Zmień dane kontroli">
+    </form>
+
+</div>
+</div>
+<script src="{% static 'kontrolBack/main.js' %}"></script>
+{% endblock content %}

@@ -5,12 +5,43 @@
 {% block content %}
 
 <div class="row d-flex justify-content-center">
-<div class="col-md-6">
+<div class="col-md-8">
     <br>
-    <h2 class="m-4">{{checklist.name}}</h2>
-    {{checklist.questions.all.count}}
-
+    <h2 class="m-4">Edycja listy sprawdzającej: {{checklist.name}}</h2>
+    <!-- <div class="msg_field jk-margin">{{msg}}</div> -->
+    
     <form action="" method="POST">
+    <h3 class="m-4 jk-margin">Nowa nazwa:</h3>
+    <input type="text" name="name">
+
+    <h3 class="m-4 jk-margin">Zawartość listy:</h3>
+    {% if questions %}
+    <table class="table table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th>#</th>
+                <th>Pytanie</th>
+                <th>Blok</th>
+                <th>Akcje</th>
+            </tr>
+        </thead>
+        <tbody>        
+            {% for q in questions %}
+            <tr>
+                <td><div class="forloop-counter">{{ forloop.counter }}</div></td>
+                <td>{{ q.question_name }}</td>
+                <td>{{ q.block_name }}</td>
+                <td> Up Down 
+                    <a href="{% url 'checklist_question_delete_view' checklist_pk=checklist.pk  question_pk=q.pk %}" class="btn btn-outline-danger">Usuń</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+
+    <br><h3 class="m-4 jk-margin">Wybierz nowe pytania:</h3>    
+    <!-- <form action="" method="POST"> -->
         {% csrf_token %}
         <div class="base_menu">
             {{ form.block|as_crispy_field }}
@@ -21,7 +52,7 @@
             {{ form.questions|as_crispy_field }}
         </div>
 
-        <input type="submit" class="btn btn-outline-success"/ value="Dodaj pytanie">
+        <input type="submit" class="btn btn-outline-success float-right" id="submitQuestion" value="Dodaj">
     </form>
 
 </div>

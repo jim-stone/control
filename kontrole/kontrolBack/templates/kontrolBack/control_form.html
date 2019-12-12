@@ -9,7 +9,10 @@
     <form method="POST" class="m-4" novalidate>
             {% csrf_token %}
             {{ form|crispy }}
+            <br>
             <button type="submit" class="btn btn-outline-success float-right">Zapisz</button>
+            <a class="btn btn-outline-danger float-left" href="{% url 'checklist_add' %}">Anuluj (nowa checklista)</a>
+            <br>
     </form>
 </div>
 </div>
