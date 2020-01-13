@@ -10,6 +10,12 @@ control_status = [
     (3, 'zakończona'),
 ]
 
+answer_choices = [
+    (0, 'tak'),
+    (1, 'nie'),
+    (2, 'nie dotyczy')
+]
+
 
 class Institution (models.Model):
     name = models.CharField(max_length=512, unique=True)
@@ -26,13 +32,20 @@ class InstitutionEmployee(models.Model):
 
 class ProjectParticipant(models.Model):
     name = models.CharField(max_length=512)
+    def __str__(self):
+        return self.name
 
 class Project(models.Model):
+    code = models.CharField(max_length=512, unique=True)
     name = models.CharField(max_length=512)
     value = models.DecimalField(max_digits=15, decimal_places=2, null=True)
     description = models.CharField(max_length=3000, null=True)
     beneficiary = models.ForeignKey(to=ProjectParticipant, related_name='projects_as_benef', on_delete=models.PROTECT)
     partners = models.ManyToManyField(to=ProjectParticipant, related_name='projects_as_partner') 
+
+    def __str__(self):
+        return self.code
+
 
 
 class QuestionBlock (models.Model):
@@ -54,7 +67,7 @@ class Question (models.Model):
         return self.name
 
 
-# założenie: 1 checklista do 1 kontroli w potencjalniei wielu podmiotach
+# założenie: 1 checklista do 1 kontroli w 1 podmiocie
 
 class Checklist(models.Model):
     name = models.CharField(max_length=255)
@@ -69,8 +82,9 @@ class Checklist(models.Model):
 class Control (models.Model):
     name = models.CharField(max_length=2000)
     subject = models.CharField(max_length=2000)
+    project = models.ForeignKey(to=Project, related_name="controls_at_project", on_delete=models.PROTECT) 
     controlling = models.ForeignKey(to=Institution, related_name="controls_by", on_delete=models.DO_NOTHING)
-    controlled = models.ManyToManyField(to=ProjectParticipant, related_name="controls_at")
+    controlled = models.ForeignKey(to=ProjectParticipant, related_name="controls_at_participant", on_delete=models.DO_NOTHING)
     date_start = models.DateTimeField()
     date_end = models.DateTimeField()
     checklist = models.ForeignKey(to=Checklist, null=True, on_delete=models.SET_NULL, related_name='controls')
@@ -85,6 +99,7 @@ class QuestionInList (models.Model):
     question_name = models.CharField(max_length=500)
     block_name = models.CharField(max_length=255)
     checklist = models.ForeignKey(to=Checklist, related_name='questions', on_delete=models.CASCADE)
+    answer = models.IntegerField(choices=answer_choices, null=True)
 
     class Meta:
         constraints = [

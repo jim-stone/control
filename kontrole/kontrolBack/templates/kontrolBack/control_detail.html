@@ -7,22 +7,23 @@
 <div class="row d-flex justify-content-center">
 <div class="col-md-8">
     <br>
-    <h2 class="m-4">Szczegóły kontroli: {{control.name}}</h2>
+    <h2 class="m-4">Edytuj kontrolę: {{control.name}}</h2>
+        <p>
+            W tym widoku możesz zmienić dane kontroli. W szczególności,
+            możesz zarejestrować jej rozpoczęcie lub zakończenie poprzez
+            zmianę statusu.
+        </p>
+
+
+    </table>
   
     <form action="" method="POST">
   
     <!-- <form action="" method="POST"> -->
         {% csrf_token %}
         {{ form|crispy}}
-        <div>
-            {{ form.goal|as_crispy_field }}
-        </div>
-    
 
-        <div>
-            {{ form.subject|as_crispy_field }}
-        </div>
-
+        <br>
         <a class="btn btn-outline-danger float-left" href=""> Anuluj </a>
         <input type="submit" class="btn btn-outline-success float-right" id="change_control_data" value="Zmień dane kontroli">
     </form>

@@ -14,8 +14,12 @@
     {% for c in checklists %}
     
     <div class="row m-3">
-        <div class="col-md-9"> {{ c.name }} </div>    
-        <div class="col-md-1"><a href="{{ c.get_absolute_url }}" class="btn btn-outline-primary btn-sm">Edytuj</a></div>
+        <div class="col-md-7"> {{ c.name }} </div>    
+        <div class="col-md-2"><a href="{{ c.get_absolute_url }}" class="btn btn-primary btn-sm">Zmień nazwę</a></div>
+        <div class="col-md-2"><a href="{{ c.get_absolute_url }}" class="btn btn-outline-primary btn-sm">Wybierz pytania</a></div>
+        <div class="col-md-1"><a href="{{ c.get_absolute_url }}" class="btn btn-outline-danger btn-sm">Usuń</a></div>
+
+
     </div>
     <hr/>
 

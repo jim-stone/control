@@ -10,9 +10,9 @@
     <h2 class="m-4">Edycja listy sprawdzającej: {{checklist.name}}</h2>
     <!-- <div class="msg_field jk-margin">{{msg}}</div> -->
     
-    <form action="" method="POST">
+    <form action="" method="POST" novalidate    >
     <h3 class="m-4 jk-margin">Nowa nazwa:</h3>
-    <input type="text" name="name">
+    {{form.new_checklist_name|as_crispy_field}}
 
     <h3 class="m-4 jk-margin">Zawartość listy:</h3>
     {% if questions %}
