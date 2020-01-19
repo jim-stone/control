@@ -23,6 +23,10 @@ table, form, p {
     margin-left: 5em;
 }
 
+td {
+    padding: 10px;
+}
+
 
 .jk-margin {
     margin-left: 5em

@@ -8,8 +8,20 @@
   <br>
   <form method="post">
     {% csrf_token %}
-    {{ form.as_p }}
-    <br>
-    <button type="submit" class="btn btn-success">Login</button>
+    
+    <table>
+      <tr>
+        <td>{{form.username.label}}:</td><td>{{form.username}}</td>
+      </tr>
+      <tr>
+        <td>{{form.password.label}}:</td><td>{{form.password}}</td>
+      </tr>
+      <tr>
+        <td><button type="submit" class="btn btn-success">Login</button></td><td></td>
+      </tr>
+
+    </table>
+
+
   </form>
 {% endblock %}

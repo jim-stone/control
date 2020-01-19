@@ -1,7 +1,23 @@
 {% extends 'kontrolBack/base.html' %}
+{% load static %}
 
 {% block content %}
-<div class="row d-flex justify-content-center">
+<br><br><select id="blocks_menu" class="jk-margin">
+    <option disabled selected value> -- wybierz temat aby zobaczyć pytania -- </option>
+    <!-- wypełniane javascriptem -->
+</select><br><br>
+
+<div id="result">
+</div>
+
+<script type="text/javascript" src="{% static 'kontrolBack/questionList.js' %}"></script>
+{% endblock content %}
+
+
+
+
+
+<!-- <div class="row d-flex justify-content-center">
 <div class="col-md-8">
     <br>
     <h2 class="m-4">Pytania kontrolne</h2>
@@ -21,6 +37,4 @@
     <p>Nie znaleziono pytań.</p>
     {% endfor %}
 
-</div>
-</div>
-{% endblock content %}
+</div> -->
