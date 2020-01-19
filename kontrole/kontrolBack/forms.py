@@ -1,6 +1,11 @@
 from django import forms
 from .models import QuestionBlock, Question, Checklist, Control
 
+
+class SearchQuestionForm(forms.Form):
+    search = forms.TextInput()
+
+
 class AddQuestionToListForm(forms.Form):
     
     choices_blocks = [('', '--------------------')] + [(b.pk, b.name) for b in QuestionBlock.objects.all()]

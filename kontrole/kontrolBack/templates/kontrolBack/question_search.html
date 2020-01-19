@@ -1,0 +1,29 @@
+{% extends 'kontrolBack/base.html' %}
+
+{% block content %}
+
+<form action='' method="GET">
+    <br><br><input name="search_input" type="text"></input>
+    <input type="submit" value="Szukaj">
+</form>
+
+
+<div id="result">
+    <br>
+    <h5><strong>{{ header }}</strong></h5>
+    <table>
+        {% if questions %}
+        <tr><td><strong>Pytanie</strong></td><td><strong>Blok tematyczny</strong></td></tr>
+            {% for question in questions %}
+                <tr><td>{{question.name}}</td><td>{{question.block}}</td></tr>
+            {% endfor %}
+        {% else %}
+            <br>
+            <p><strong>{{ not_found_message }}</strong></p>
+        {% endif %}
+
+    </table>
+
+</div>
+
+{% endblock content %}

@@ -6,15 +6,56 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from django.views.generic import ListView, CreateView, DetailView, UpdateView
+from django.views.generic import ListView, CreateView, DetailView, UpdateView, FormView
 
 from .models import Control, Question, QuestionBlock, Checklist, QuestionInList, Institution
-from .forms import AddQuestionToListForm, AddControlForm
+from .forms import SearchQuestionForm, AddQuestionToListForm, AddControlForm
 
 
 class IndexView(View):
     def get(self, request):
         return render(request, 'kontrolBack/index.html')
+
+
+# lista pytań
+class QuestionListView(LoginRequiredMixin,ListView):
+    model = Question
+    context_object_name = 'questions'
+    queryset = Question.objects.all().order_by('block__name', 'name')
+    paginate_by = 10
+
+
+# wyszukiwanie pytań
+class SearchQuestionView(LoginRequiredMixin, FormView):
+    form_class = SearchQuestionForm
+    template_name = 'kontrolBack/question_search.html'
+    ctx = {} 
+    def get(self, request):
+        query = self.request.GET.get('search_input')
+        
+        print (self.request.__dict__)
+        if not query is None:
+            if query != '':
+                print ('query: ', query)
+                questions = Question.objects.filter(name__icontains=query)
+                self.ctx['questions'] = questions
+                if not questions:
+                    self.ctx['not_found_message'] = "Nie znaleziono pytań zawierających szukany tekst."
+            else:
+                questions = Question.objects.all()
+                self.ctx['questions'] = questions
+            self.ctx['header'] = f'Wyniki wyszukiwania dla <{query}>'
+            query = None
+        return render(request, self.template_name, self.ctx)
+
+    #     if 
+    # def form_valid(self, form):
+    #     query = self.request.GET.get('search_input')
+    #     questions = Question.objects.filter(name__icontains=query)
+    #     print(questions)
+
+
+
 
 # tworzy kontrolę
 class ControlAdd(LoginRequiredMixin, CreateView):
@@ -47,12 +88,7 @@ class ControlListView (LoginRequiredMixin, ListView):
             user_institution = self.request.user.institutionemployee.institution
             return Control.objects.filter(controlling=user_institution)
 
-# lista pytań
-class QuestionListView(LoginRequiredMixin,ListView):
-    model = Question
-    context_object_name = 'questions'
-    queryset = Question.objects.all().order_by('block__name', 'name')
-    paginate_by = 5
+
 
 
 # tworzy wzór checklisty
