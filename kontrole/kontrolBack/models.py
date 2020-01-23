@@ -18,33 +18,30 @@ answer_choices = [
 
 
 class Institution (models.Model):
-    name = models.CharField(max_length=512, unique=True)
+    programme = models.CharField(max_length=10) # todo: add programme model
+    code = models.CharField (max_length=10)
+    name = models.CharField(max_length=512)
 
     def __repr__(self):
         return self.name
     def __str__(self):
         return self.name
 
+
 class InstitutionEmployee(models.Model):
     user = models.OneToOneField(to=User, on_delete=models.CASCADE)
     institution = models.ForeignKey(to=Institution, on_delete=models.CASCADE)
 
 
-class ProjectParticipant(models.Model):
+class Project(models.Model):
+    programme = models.CharField(max_length=10) # todo: add programme model
+    code = models.CharField(max_length=512)
     name = models.CharField(max_length=512)
+    beneficiary_name = models.CharField(max_length=512)
+    beneficiary_nip = models.CharField(max_length=10)
+
     def __str__(self):
         return self.name
-
-class Project(models.Model):
-    code = models.CharField(max_length=512, unique=True)
-    name = models.CharField(max_length=512)
-    value = models.DecimalField(max_digits=15, decimal_places=2, null=True)
-    description = models.CharField(max_length=3000, null=True)
-    beneficiary = models.ForeignKey(to=ProjectParticipant, related_name='projects_as_benef', on_delete=models.PROTECT)
-    partners = models.ManyToManyField(to=ProjectParticipant, related_name='projects_as_partner') 
-
-    def __str__(self):
-        return self.code
 
 
 
@@ -59,7 +56,10 @@ class QuestionBlock (models.Model):
 
 class Question (models.Model):
     name = models.CharField(max_length=500, unique=True)
-    block = models.ForeignKey(to=QuestionBlock, related_name='questions', on_delete=models.DO_NOTHING)
+    block = models.ForeignKey(to=QuestionBlock, related_name='questions', on_delete=models.PROTECT)
+    order_in_block = models.IntegerField(null=True)
+    is_active = models.BooleanField(default=True)
+    # is_replacement_for = models.OneToOneField(to='Question', on_delete=models.PROTECT, editable=False, null=True, default=None)
 
     def __repr__(self):
         return self.name
@@ -71,7 +71,9 @@ class Question (models.Model):
 
 class Checklist(models.Model):
     name = models.CharField(max_length=255)
-    created = models.DateTimeField(auto_now_add=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    created_by = models.ForeignKey(to=InstitutionEmployee, related_name='checklists', on_delete=models.PROTECT, null=True)
+    # questions = models.ManyToManyField(to=Question, related_name='checklists')
 
     def get_absolute_url(self,*args,**kwargs):
         return reverse('checklist_detail',kwargs={'pk': self.pk})
@@ -81,13 +83,11 @@ class Checklist(models.Model):
 
 class Control (models.Model):
     name = models.CharField(max_length=2000)
-    subject = models.CharField(max_length=2000)
     project = models.ForeignKey(to=Project, related_name="controls_at_project", on_delete=models.PROTECT) 
-    controlling = models.ForeignKey(to=Institution, related_name="controls_by", on_delete=models.DO_NOTHING)
-    controlled = models.ForeignKey(to=ProjectParticipant, related_name="controls_at_participant", on_delete=models.DO_NOTHING)
+    controlling = models.ForeignKey(to=Institution, related_name="controls_by", on_delete=models.PROTECT)
     date_start = models.DateTimeField()
     date_end = models.DateTimeField()
-    checklist = models.ForeignKey(to=Checklist, null=True, on_delete=models.SET_NULL, related_name='controls')
+    checklist = models.ForeignKey(to=Checklist, null=True, blank=True, on_delete=models.PROTECT, related_name='controls')
     status = models.IntegerField(choices=control_status, default=0)
 
 
@@ -98,34 +98,41 @@ class Control (models.Model):
 class QuestionInList (models.Model):
     question_name = models.CharField(max_length=500)
     block_name = models.CharField(max_length=255)
-    checklist = models.ForeignKey(to=Checklist, related_name='questions', on_delete=models.CASCADE)
-    answer = models.IntegerField(choices=answer_choices, null=True)
+    checklist = models.ManyToManyField(to=Checklist, related_name='questions')
 
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(fields=['question_name', 'checklist'],
-            name="dont_repeat_question_in_checklist")
-        ]
+    # To nie działa !!!
+    # class Meta:
+    #     constraints = [
+    #         models.UniqueConstraint(fields=['question_name', 'checklist'],
+    #         name="dont_repeat_question_in_checklist")
+    #     ]
+
+
+class Answer(models.Model):
+    question = models.OneToOneField(to=QuestionInList, on_delete=models.PROTECT)
+    control = models.ForeignKey(to=Control, related_name='answers', on_delete=models.CASCADE)
+    content = models.IntegerField(choices=answer_choices)
+
+
+class Comment (models.Model):
+    answer = models.OneToOneField(Answer, null=True, on_delete=models.PROTECT)
 
 
 class ResultInfo (models.Model):
     control = models.OneToOneField(to=Control, on_delete=models.PROTECT)
 
+
 class Finding(models.Model):
     result_info = models.ForeignKey(to=ResultInfo, related_name='findings', on_delete=models.PROTECT)
     content = models.CharField(max_length=10000)
+
 
 class Recommendation (models.Model):
     result_info = models.ForeignKey(to=ResultInfo, related_name='recommendations', on_delete=models.PROTECT)
     content = models.CharField(max_length=10000)
 
 
-class Comment (models.Model):
-    question = models.ForeignKey(to=QuestionInList, on_delete=models.DO_NOTHING, related_name='comments')
-    checklist = models.ForeignKey(to=Checklist, on_delete=models.CASCADE, related_name='comments')
 
-    class Meta:
-        unique_together = ('question', 'checklist',)
 
 
 

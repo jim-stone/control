@@ -1,0 +1,18 @@
+{% extends 'kontrolBack/base.html' %}
+
+{% block content %}
+<br><br>
+<h5><strong>{{ checklist.name }}</strong> (lista sprawdzająca)</h5><br>
+<a href="{% url 'checklist_edit' pk=checklist.pk %}" class="btn btn-outline-primary btn-sm">Edytuj</a>
+
+<table>
+    {% for q in checklist.questions.all %}
+    <tr>
+        <td>{{forloop.counter}}</td>
+        <td>{{ q.question_name }}</td>
+        <td>{{ q.block_name }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% endblock content %}

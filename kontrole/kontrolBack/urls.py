@@ -4,7 +4,7 @@ from .api import QuestionViewSet, QuestionBlockViewSet, InstitutionViewSet
 from .views import IndexView, ControlAdd, ControlListView,\
                    QuestionListView, ChecklistAddView, ChecklistListView,\
                    ChecklistDetailView, delete_checklist_question, ControlEditView,\
-                   SearchQuestionView    
+                   SearchQuestionView, ChecklistDetailViewSimplified    
 
 router = routers.DefaultRouter()
 
@@ -22,7 +22,8 @@ urlpatterns = router.urls + [
     url(r'szukaj_pytania', SearchQuestionView.as_view(), name='question_search'),    
     url(r'pytania$', QuestionListView.as_view(), name='question_list'),
     url(r'dodaj_liste', ChecklistAddView.as_view(), name='checklist_add'),
-    url(r'listy/(?P<pk>\d+)/$', ChecklistDetailView.as_view(), name='checklist_detail'),
+    url(r'^listy/(?P<pk>\d+)/$', ChecklistDetailViewSimplified.as_view(), name='checklist_detail'),
+    url(r'edycja_listy/(?P<pk>\d+)/$', ChecklistDetailView.as_view(), name='checklist_edit'),
     url(r'listy$', ChecklistListView.as_view(), name='checklist_list'),
     url(r'^delete/(?P<checklist_pk>\d+)/(?P<question_pk>\d+)/$', delete_checklist_question, name='checklist_question_delete_view'),
 ]

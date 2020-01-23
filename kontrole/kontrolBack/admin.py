@@ -11,16 +11,18 @@ class InstitutionEmployeeInline(admin.StackedInline):
     can_delete = False
     verbose_name_plural = 'employees'
 
+
 class UserAdmin(BaseUserAdmin):
     inlines = (InstitutionEmployeeInline,)
 
 
-
 @admin.register(Question)
 class QuestionAdmin(admin.ModelAdmin):
-    list_display = ('name', 'block')
+    list_display = ('name', 'block', 'order_in_block', 'is_active')
     # podobno tak szybciej
     list_select_related = ('block',)
+    # readonly_fields = ('name', 'block', 'order_in_block', 'is_replacement_for')
+
 
 class QuestionInline(admin.TabularInline):
     model = Question
@@ -34,6 +36,7 @@ class QuestionBlockAdmin(admin.ModelAdmin):
     
     def _questions(self, obj):
         return mark_safe(('<br/><br/>').join([q.name for q in obj.questions.all()]))
+
 
 admin.site.register(Institution)
 admin.site.unregister(User)

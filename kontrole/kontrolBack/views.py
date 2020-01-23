@@ -48,47 +48,13 @@ class SearchQuestionView(LoginRequiredMixin, FormView):
             query = None
         return render(request, self.template_name, self.ctx)
 
-    #     if 
-    # def form_valid(self, form):
-    #     query = self.request.GET.get('search_input')
-    #     questions = Question.objects.filter(name__icontains=query)
-    #     print(questions)
 
-
-
-
-# tworzy kontrolę
-class ControlAdd(LoginRequiredMixin, CreateView):
-    form_class = AddControlForm
-    success_url = 'kontrole'
-    template_name = 'kontrolBack/control_form.html'
-    
-    def get(self, request, *args, **kwargs):
-        
-        if request.user.is_superuser:
-            form = AddControlForm()
-        else:
-            user_institution = Institution.objects.filter(pk=self.request.user.institutionemployee.institution.pk)
-            form = AddControlForm(initial={'controlling': user_institution[0]})           
-            form.fields['controlling'].queryset = user_institution
-            form.fields['controlling'].disabled = True
-        return render (request, self.template_name, {'form': form})
-
-
-
-    
-# lista kontroli
-class ControlListView (LoginRequiredMixin, ListView):
-    context_object_name = 'controls'
-
-    def get_queryset(self):
-        if self.request.user.is_staff:
-            return Control.objects.all()
-        else:
-            user_institution = self.request.user.institutionemployee.institution
-            return Control.objects.filter(controlling=user_institution)
-
-
+# lista wzorów checklist
+class ChecklistListView(LoginRequiredMixin, ListView):
+    model = Checklist    
+    context_object_name = 'checklists'
+    queryset = Checklist.objects.all().order_by('-created')
+    paginate_by = 150
 
 
 # tworzy wzór checklisty
@@ -97,15 +63,16 @@ class ChecklistAddView(LoginRequiredMixin, CreateView):
     fields = ['name']
     success_url = 'listy'
 
-    
-# lista wzorów checklist
-class ChecklistListView(LoginRequiredMixin, ListView):
-    model = Checklist    
-    context_object_name = 'checklists'
-    queryset = Checklist.objects.all().order_by('-created')
-    paginate_by = 150
 
-#
+# ogląd checklisty
+class ChecklistDetailViewSimplified(LoginRequiredMixin, DetailView):
+    model = Checklist
+    fields = ['name', 'questions']
+    context_object_name = 'checklist'
+    template_name = 'kontrolBack/checklist_detail_simple.html'
+
+
+# edycja checklisty
 class ChecklistDetailView(LoginRequiredMixin, View):
 
     def get (self, request, pk):
@@ -154,6 +121,43 @@ class ChecklistDetailView(LoginRequiredMixin, View):
         # ctx['msg'] = msg
 
         return render(request, 'kontrolBack/checklist_detail.html', ctx)
+
+
+
+
+# tworzy kontrolę
+class ControlAdd(LoginRequiredMixin, CreateView):
+    form_class = AddControlForm
+    success_url = 'kontrole'
+    template_name = 'kontrolBack/control_form.html'
+    
+    def get(self, request, *args, **kwargs):
+        
+        if request.user.is_superuser:
+            form = AddControlForm()
+        else:
+            user_institution = Institution.objects.filter(pk=self.request.user.institutionemployee.institution.pk)
+            form = AddControlForm(initial={'controlling': user_institution[0]})           
+            form.fields['controlling'].queryset = user_institution
+            form.fields['controlling'].disabled = True
+        return render (request, self.template_name, {'form': form})
+
+
+
+    
+# lista kontroli
+class ControlListView (LoginRequiredMixin, ListView):
+    context_object_name = 'controls'
+
+    def get_queryset(self):
+        if self.request.user.is_staff:
+            return Control.objects.all()
+        else:
+            user_institution = self.request.user.institutionemployee.institution
+            return Control.objects.filter(controlling=user_institution)
+
+
+
     
 
 # widok usuwania pytanie z listy sprawdzająceh

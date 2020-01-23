@@ -19,7 +19,7 @@ class AddQuestionToListForm(forms.Form):
 class AddControlForm(forms.ModelForm):
     class Meta:
         model = Control
-        fields = ['name', 'subject', 'project', 'controlling', 'controlled', 'date_start', 'date_end', 'checklist']
+        fields = ['name', 'project', 'controlling', 'date_start', 'date_end', 'checklist']
         widgets = {
             'project': forms.Select()
         }

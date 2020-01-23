@@ -1,7 +1,37 @@
 {% extends 'kontrolBack/base.html' %}
 
 {% block content %}
-<div class="row d-flex justify-content-center">
+<br><br>
+    <h5><strong>Listy sprawdzające</strong> (dostępne dla użytkownika)</h5><br>
+    <a href="{% url 'checklist_add' %}" class="btn btn-outline-primary btn-sm">Utwórz nową listę</a>
+    
+<table>
+    {% if checklists %}
+    <tr>
+        <td><strong>Nazwa listy</strong></td>
+        <td><strong>Autor</strong></td>
+        <td><strong>Liczba pytań</strong></td>
+        <td><strong>Czy użyta w kontroli</strong></td>
+    </tr>
+        {% for c in checklists %}
+            <tr>
+                <td> <a href="{{ c.get_absolute_url }}">{{c.name}}</a></td>
+                <td>nieznany użytkownik (zaślepka)</td>
+                <td>{{c.questions.count}}</td>
+                <td>Nie (zaślepka) </td>
+            </tr>
+        {% endfor %}
+    {% else %}
+        <br>
+        <p><strong>Brak list sprawdzających</strong></p>
+    {% endif %}
+
+</table>
+
+{% endblock %}
+
+
+<!-- <div class="row d-flex justify-content-center">
 <div class  ="col-md-8">
     <br>
     <h2 class="m-4">Listy sprawdzające</h2>
@@ -31,5 +61,4 @@
     {% endfor %}
     
 </div>
-</div>
-{% endblock content %}
+</div> -->
