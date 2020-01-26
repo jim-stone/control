@@ -27,38 +27,5 @@
     {% endif %}
 
 </table>
-
 {% endblock %}
 
-
-<!-- <div class="row d-flex justify-content-center">
-<div class  ="col-md-8">
-    <br>
-    <h2 class="m-4">Listy sprawdzające</h2>
-    <div class="row m-3 header">
-        <div class="col-md-9 font-weight-bold">Nazwa</div>
-        <div class="col-md-1"></div>
-    </div>
-    <hr>
-    
-    {% for c in checklists %}
-    
-    <div class="row m-3">
-        <div class="col-md-7"> {{ c.name }} </div>    
-        <div class="col-md-2"><a href="{{ c.get_absolute_url }}" class="btn btn-primary btn-sm">Zmień nazwę</a></div>
-        <div class="col-md-2"><a href="{{ c.get_absolute_url }}" class="btn btn-outline-primary btn-sm">Wybierz pytania</a></div>
-        <div class="col-md-1"><a href="{{ c.get_absolute_url }}" class="btn btn-outline-danger btn-sm">Usuń</a></div>
-
-
-    </div>
-    <hr/>
-
-    {% empty %}
-    <div class="row m-4"></div>
-        <div class="col-md-8">Brak list sprawdzających.</div>
-    </div>
-
-    {% endfor %}
-    
-</div>
-</div> -->

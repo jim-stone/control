@@ -13,53 +13,48 @@
 </head>
 <body>
              <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <!-- <nav class="navbar navbar-expand-lg navbar-light bg-light"> -->
-                <a class="navbar-brand" href="{% url 'index' %}">Kontrole</a>
+                <a class="navbar-brand" href="{% url 'index' %}">SuperKontroler</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                   <span class="navbar-toggler-icon"></span>
                 </button>
               
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                   <ul class="navbar-nav mr-auto">
-                    <!-- <li class="nav-item active">
-                      <a class="nav-link" href="{% url 'control_list' %}">Przeglądaj <span class="sr-only">(current)</span></a>
-                    </li> -->
 
                     <!-- zeroth dropdown -->
                     <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="" id="prepareDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Przeglądaj
+                        Pytania
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="{% url 'control_list' %}">Kontrole</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="{% url 'question_list' %}">Pytania kontrolne</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="{% url 'checklist_list' %}">Listy sprawdzające</a>
+                      <a class="dropdown-item" href="{% url 'question_list' %}">Przeglądaj pytania</a>
+                      <div class="dropdown-divider"></div>
+                      <a class="dropdown-item" href="{% url 'question_search' %}">Szukaj pytań</a>
+                      
                     </div>
                     </li> 
 
                     <!-- first dropdown -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="" id="prepareDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Przygotuj
+                            Listy sprawdzające
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="{% url 'control_add' %}">Nowa kontrola</a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="{% url 'checklist_add' %}">Nowa lista sprawdzająca</a>
+                          <a class="dropdown-item" href="{% url 'checklist_list' %}">Przeglądaj listy</a>
+                          <div class="dropdown-divider"></div>
+                          <a class="dropdown-item" href="{% url 'checklist_add' %}">Nowa lista sprawdzająca</a>
                         </div>
                     </li>
 
                     <!-- second dropdown -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Przeprowadź
+                            Kontrole
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="#">Wypełnij listę sprawdzającą</a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="#">Wypełnij informację pokontolną</a>
+                          <a class="dropdown-item" href="{% url 'control_list' %}">Przeglądaj kontrole</a>
+                          <div class="dropdown-divider"></div> 
+                          <a class="dropdown-item" href="{% url 'control_add' %}">Nowa kontrola</a>
                         </div>
                     </li>
                   </ul>

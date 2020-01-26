@@ -1,0 +1,16 @@
+{% extends 'kontrolBack/base.html' %}
+{% load static %}
+
+{% block content %}
+<br><br>
+    <h5><strong>Kontrola {{question.control.name}}</strong></h5><br>
+    <h5><strong>{{question}}</strong></h5><br>
+
+<form action="" method='POST'>
+{% csrf_token%}
+{{form.as_p}}
+
+<input type="submit" value="Zapisz">
+</form>
+
+{% endblock content %}

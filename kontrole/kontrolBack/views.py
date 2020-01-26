@@ -1,4 +1,5 @@
 from django.shortcuts import render, reverse, redirect
+from django.urls import reverse_lazy
 from django.views import View
 from django.http import HttpResponse
 from django.contrib import messages
@@ -8,8 +9,10 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, FormView
 
-from .models import Control, Question, QuestionBlock, Checklist, QuestionInList, Institution
-from .forms import SearchQuestionForm, AddQuestionToListForm, AddControlForm
+from .models import Control, Question, QuestionBlock, Checklist, QuestionInList,\
+     Institution, QuestionInControl, Answer
+
+from .forms import SearchQuestionForm, AddQuestionToListForm, AddControlForm, AddAnswerToQuestionForm
 
 
 class IndexView(View):
@@ -53,7 +56,7 @@ class SearchQuestionView(LoginRequiredMixin, FormView):
 class ChecklistListView(LoginRequiredMixin, ListView):
     model = Checklist    
     context_object_name = 'checklists'
-    queryset = Checklist.objects.all().order_by('-created')
+    queryset = Checklist.objects.all().order_by('-created_at')
     paginate_by = 150
 
 
@@ -73,7 +76,7 @@ class ChecklistDetailViewSimplified(LoginRequiredMixin, DetailView):
 
 
 # edycja checklisty
-class ChecklistDetailView(LoginRequiredMixin, View):
+class ChecklistEditView(LoginRequiredMixin, View):
 
     def get (self, request, pk):
         ctx = {}
@@ -94,22 +97,27 @@ class ChecklistDetailView(LoginRequiredMixin, View):
             block = QuestionBlock.objects.get(pk = int(form.cleaned_data.get('block')))
             questions = Question.objects.filter(pk__in=(form.cleaned_data.get('questions')))
 
-            new_checklist_name = form.cleaned_data.get('new_checklist_name')
-            print(1, checklist.name, 2, new_checklist_name)
-
-            objs_to_create = [
-                QuestionInList(question_name=q, block_name=block, checklist=checklist)\
-                    for q in questions
+            qs_to_create = [
+                QuestionInList.objects.create(question_name=q, block_name=block) for q in questions
                 ]
-            try:    
-                if new_checklist_name != checklist.name:
-                    checklist.name = new_checklist_name
-                    checklist.save()
-                QuestionInList.objects.bulk_create(objs_to_create)
+
+            # print(questions)
+            # print(qs_to_create)
+
+            try:
+                # dziwna walidacja
+                qs_for_checklist = list(checklist.questions.values_list('question_name', flat=True))
+                for new_q in qs_to_create:
+                    print(new_q.question_name.name, 'in??', qs_for_checklist)
+                    assert new_q.question_name.name not in qs_for_checklist
+
+                # koniec dziwnej walidacji
+                checklist.questions.add(*qs_to_create)
                 messages.success (request, "Zapisano zmiany.")
             except Exception as e:
                 messages.error(request, "Coś się nie zgadza. Prawdopodobnie \
                     próbujesz dodać do listy pytanie, które już na niej jest.") 
+                print(e)
             # print ([q.checklist.name for q in QuestionInList.objects.all()])
             finally:
                 form = AddQuestionToListForm() # to załatwia problem błędnego odświeżania widoku po zapisaniu!!!
@@ -142,6 +150,17 @@ class ControlAdd(LoginRequiredMixin, CreateView):
             form.fields['controlling'].disabled = True
         return render (request, self.template_name, {'form': form})
 
+    def form_valid(self, form):
+        control = form.save(commit=False)
+        control.save()
+        for q in control.checklist.questions.all():
+            QuestionInControl.objects.create(
+                question_name = q.question_name,
+                block_name = q.block_name,
+                control = control
+            )
+        messages.success(self.request, 'Kontrola została dodana.')
+        return super().form_valid(form)
 
 
     
@@ -164,15 +183,22 @@ class ControlListView (LoginRequiredMixin, ListView):
 def delete_checklist_question (request, checklist_pk, question_pk):
     object = QuestionInList.objects.get(pk=question_pk)
     object.delete()
-    return redirect(to='checklist_detail', pk=checklist_pk)
+    return redirect(to='checklist_edit', pk=checklist_pk)
+
+def delete_control (request, pk):
+    object = Control.objects.get(pk=pk)
+    object.delete()
+    return redirect(to='control_list')
+
+
 
 
 class ControlEditView(LoginRequiredMixin, UpdateView):
     model = Control
-    fields = '__all__'
+    fields = 'name project controlling date_start date_end  status'.split()
     context_object_name = 'control'
     template_name = 'kontrolBack/control_detail.html'
-    success_url = 'control_edit'
+    success_url = '/kontrole/'
     
     def form_valid(self, form):
         messages.success(self.request, 'Zmiany zostały zapisane.')
@@ -186,3 +212,56 @@ class ControlEditView(LoginRequiredMixin, UpdateView):
 def logout_view(request):
     logout(request)
     return redirect ('login')
+
+
+# przeglądanie wypełnionej checklisty dla controli
+class ControlChecklistView(LoginRequiredMixin, View):
+
+    def get(self, request, pk):
+        ctx = {}
+        control = Control.objects.get(pk=pk)
+        questions = control.questions.order_by('block_name')
+        # print ([q.pk for q in questions])
+        ctx['control'] = control
+        ctx['questions'] = questions
+        return render(request, 'kontrolBack/ControlChecklist.html', ctx)
+
+# edycja checklisty
+# widok na razie "pusty", główna funkcjonalność w AnswerAddView
+class ControlChecklistEditView(LoginRequiredMixin, View):
+    def get(self, request, pk):
+        # przyjmuje control.id
+        ctx = {}
+        control = Control.objects.get(pk=pk)
+        questions = control.questions.order_by('block_name')
+        # form = AddQuestionToListForm()
+        ctx['control'] = control
+        ctx['questions'] = questions
+        # ctx['form'] = form
+        return render(request, 'kontrolBack/ControlChecklistEdit.html', ctx)
+
+
+class AnswerAddView(LoginRequiredMixin, View):
+ 
+    def get (self, request, question_pk):
+        question = QuestionInControl.objects.get(pk=question_pk)
+        form = AddAnswerToQuestionForm()
+        ctx = {'question': question, 'form': form}
+        return render(request, 'kontrolBack/AddAnswer.html', ctx)
+    
+    def post(self, request, question_pk):
+        question = QuestionInControl.objects.get(pk=question_pk)
+        form = AddAnswerToQuestionForm(request.POST)
+        if form.is_valid():
+            content = form.cleaned_data['content']
+            comment = form.cleaned_data['comment']
+            Answer.objects.create(
+                question=question,
+                content=content,
+                comment=comment
+            )
+        return redirect(to='control_checklist', pk=question.control.pk)
+
+class AnswerEditView(LoginRequiredMixin, UpdateView):
+    form_class = AddAnswerToQuestionForm
+    template_name = 'kontrolBack/AddAnswer.html'

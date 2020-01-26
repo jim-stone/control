@@ -21,6 +21,7 @@
 
 table, form, p {
     margin-left: 5em;
+    margin-right: 5em;
 }
 
 .btn {
@@ -35,6 +36,10 @@ h5 {
 
 td {
     padding: 10px;
+}
+
+td.border-bottom {
+    border-bottom: 2pt solid black;
 }
 
 

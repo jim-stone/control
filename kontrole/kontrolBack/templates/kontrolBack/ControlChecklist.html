@@ -1,0 +1,41 @@
+{% extends 'kontrolBack/base.html' %}
+{% load static %}
+
+
+{% block content %}
+<br><br>
+<h5><strong>Lista sprawdzająca dla kontroli {{ control.name }} </strong>(podgląd)</h5><br>
+<a href="{% url 'control_checklist_edit' pk=control.pk %}" class="btn btn-outline-primary btn-sm">Edytuj</a>
+
+<table>
+    <tr>
+        <td class="border-bottom"><strong>L.p.</strong></td>
+        <td class="border-bottom"><strong>Pytanie</strong></td>
+        <td class="border-bottom"><strong>Blok</strong></td>
+        <td class="border-bottom"><strong>Odpowiedź</strong></td>
+        <td class="border-bottom"><strong>Akcja</strong></td>
+    </tr>
+
+    {% for q in questions %}
+    <tr>
+        <td>{{forloop.counter}}</td>
+        <td> {{ q.question_name }}</td>
+        <td>{{ q.block_name }}</td>
+        <td class="answer_field">{{ q.answer.get_content_display }}</td>
+        <td>
+            {% if q.answer.get_content_display  %}
+            <a href="{% url 'answer_edit' question_pk=q.pk %}" class="btn btn-outline-primary btn-sm">Edytuj</a>
+            {% else %}
+            <a href="{% url 'answer_add' question_pk=q.pk %}" class="btn btn-outline-success btn-sm">Dodaj</a>
+            {% endif %}
+        </td>
+    </tr>
+    <tr>
+        <td colspan="4" class="border-bottom">Komentarz:<br>
+        <em>{% firstof q.answer.comment 'Brak uwag' %}<br></em></td>
+    </tr>
+    {% endfor %}
+</table>
+
+<script type="text/javascript" src="{% static 'kontrolBack/answerField.js' %}"></script>
+{% endblock content %}

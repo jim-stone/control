@@ -8,11 +8,8 @@
 <div class="col-md-8">
     <br>
     <h2 class="m-4">Edycja listy sprawdzającej: {{checklist.name}}</h2>
-    <!-- <div class="msg_field jk-margin">{{msg}}</div> -->
     
-    <form action="" method="POST" novalidate    >
-    <h3 class="m-4 jk-margin">Nowa nazwa:</h3>
-    {{form.new_checklist_name|as_crispy_field}}
+    <form action="" method="POST" novalidate>
 
     <h3 class="m-4 jk-margin">Zawartość listy:</h3>
     {% if questions %}
@@ -31,7 +28,7 @@
                 <td><div class="forloop-counter">{{ forloop.counter }}</div></td>
                 <td>{{ q.question_name }}</td>
                 <td>{{ q.block_name }}</td>
-                <td> Up Down 
+                <td> 
                     <a href="{% url 'checklist_question_delete_view' checklist_pk=checklist.pk  question_pk=q.pk %}" class="btn btn-outline-danger">Usuń</a>
                 </td>
             </tr>

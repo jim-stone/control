@@ -21,6 +21,7 @@ class Institution (models.Model):
     programme = models.CharField(max_length=10) # todo: add programme model
     code = models.CharField (max_length=10)
     name = models.CharField(max_length=512)
+    is_coordinator = models.BooleanField(default=False)
 
     def __repr__(self):
         return self.name
@@ -47,6 +48,7 @@ class Project(models.Model):
 
 class QuestionBlock (models.Model):
     name = models.CharField(max_length=255, unique=True)
+    # block_order = models.IntegerField(default=99, null=True)
 
     def __repr__(self):
         return self.name
@@ -100,22 +102,28 @@ class QuestionInList (models.Model):
     block_name = models.CharField(max_length=255)
     checklist = models.ManyToManyField(to=Checklist, related_name='questions')
 
-    # To nie działa !!!
-    # class Meta:
-    #     constraints = [
-    #         models.UniqueConstraint(fields=['question_name', 'checklist'],
-    #         name="dont_repeat_question_in_checklist")
-    #     ]
 
+class QuestionInControl (models.Model):
+    question_name = models.CharField(max_length=500)
+    block_name = models.CharField(max_length=255)
+    control = models.ForeignKey(to=Control, on_delete=models.CASCADE, related_name='questions')
+
+    def __str__(self):
+        return self.question_name
+    def __repr__(self):
+        return self.question_name
 
 class Answer(models.Model):
-    question = models.OneToOneField(to=QuestionInList, on_delete=models.PROTECT)
-    control = models.ForeignKey(to=Control, related_name='answers', on_delete=models.CASCADE)
+    question = models.OneToOneField(to=QuestionInControl, on_delete=models.PROTECT)
     content = models.IntegerField(choices=answer_choices)
+    comment = models.CharField(max_length=10000, null=True, blank=True)
+
+    # class Meta:
+    #     unique_together = ('question', 'content')
 
 
-class Comment (models.Model):
-    answer = models.OneToOneField(Answer, null=True, on_delete=models.PROTECT)
+# class Comment (models.Model):
+#     answer = models.OneToOneField(Answer, null=True, on_delete=models.PROTECT)
 
 
 class ResultInfo (models.Model):
