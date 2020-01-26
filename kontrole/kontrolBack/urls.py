@@ -31,6 +31,6 @@ urlpatterns = router.urls + [
     url(r'^kontrole/(?P<pk>\d+)/lista/edycja', ControlChecklistEditView.as_view(), name='control_checklist_edit'),
     url(r'^kontrole/delete/(?P<pk>\d+)/', delete_control, name='control_delete'),
     url(r'^kontrole/dodaj_odpowiedz/(?P<question_pk>\d+)/$', AnswerAddView.as_view(), name='answer_add'),
-    url(r'^kontrole/edytuj_odpowiedz/(?P<question_pk>\d+)/$', AnswerEditView.as_view(), name='answer_edit'),
+    url(r'^kontrole/edytuj_odpowiedz/(?P<pk>\d+)/$', AnswerEditView.as_view(), name='answer_edit'),
 
 ]

@@ -16,7 +16,7 @@
         {% for c in checklists %}
             <tr>
                 <td> <a href="{{ c.get_absolute_url }}">{{c.name}}</a></td>
-                <td>nieznany użytkownik (zaślepka)</td>
+                <td>{% firstof c.created_by.user.username 'nieznany' %}</td>
                 <td>{{c.questions.count}}</td>
                 <td>Nie (zaślepka) </td>
             </tr>

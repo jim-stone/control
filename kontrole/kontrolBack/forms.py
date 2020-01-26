@@ -32,9 +32,6 @@ class AddAnswerToQuestionForm(forms.ModelForm):
         model = Answer
         fields = ['content', 'comment']
         widgets = {
-            # 'question': forms.Textarea(attrs={'disabled': False,
-            # 'rows':1,
-            # 'cols':50}),
             'comment': forms.Textarea(
                 attrs={
                     'rows': 4,

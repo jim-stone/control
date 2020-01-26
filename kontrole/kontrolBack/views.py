@@ -66,6 +66,14 @@ class ChecklistAddView(LoginRequiredMixin, CreateView):
     fields = ['name']
     success_url = 'listy'
 
+    def form_valid(self, form):
+        checklist = form.save(commit=False)
+        checklist.created_by = self.request.user.institutionemployee
+        checklist.save()
+        messages.success(self.request, 'Nowa lista sprawdzająca została utworzona.')
+        return super().form_valid(form)
+
+
 
 # ogląd checklisty
 class ChecklistDetailViewSimplified(LoginRequiredMixin, DetailView):
@@ -263,5 +271,16 @@ class AnswerAddView(LoginRequiredMixin, View):
         return redirect(to='control_checklist', pk=question.control.pk)
 
 class AnswerEditView(LoginRequiredMixin, UpdateView):
+    model = Answer
     form_class = AddAnswerToQuestionForm
-    template_name = 'kontrolBack/AddAnswer.html'
+    template_name = 'kontrolBack/EditAnswer.html'
+    
+    def get_success_url(self):
+        pk = self.object.question.control.pk
+        return reverse('control_checklist', kwargs={'pk':pk})
+
+
+
+
+
+
