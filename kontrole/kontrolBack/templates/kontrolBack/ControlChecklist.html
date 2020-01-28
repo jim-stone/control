@@ -5,7 +5,11 @@
 {% block content %}
 <br><br>
 <h5><strong>Lista sprawdzająca dla kontroli {{ control.name }} </strong>(podgląd)</h5><br>
-<a href="{% url 'control_checklist_edit' pk=control.pk %}" class="btn btn-outline-primary btn-sm">Edytuj</a>
+<a href="{% url 'control_checklist_edit' pk=control.pk %}" class="btn btn-outline-success btn-sm">Edytuj</a>
+<button class="btn btn-outline-primary btn-sm toggler">
+       Pokaż komentarze 
+</button>
+
 
 <table>
     <tr>
@@ -30,8 +34,8 @@
             {% endif %}
         </td>
     </tr>
-    <tr>
-        <td colspan="4" class="border-bottom">Komentarz:<br>
+    <tr class="comment hidden">
+        <td colspan="5" class="border-bottom">Komentarz:<br>
         <em>{% firstof q.answer.comment 'Brak uwag' %}<br></em></td>
     </tr>
     {% endfor %}

@@ -47,7 +47,7 @@ class SearchQuestionView(LoginRequiredMixin, FormView):
             else:
                 questions = Question.objects.all()
                 self.ctx['questions'] = questions
-            self.ctx['header'] = f'Wyniki wyszukiwania dla <{query}>'
+            self.ctx['header'] = f'Wyniki wyszukiwania dla "{query}"'
             query = None
         return render(request, self.template_name, self.ctx)
 

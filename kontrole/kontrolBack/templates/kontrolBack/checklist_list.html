@@ -1,31 +1,36 @@
 {% extends 'kontrolBack/base.html' %}
+{% load static %}
 
 {% block content %}
 <br><br>
     <h5><strong>Listy sprawdzające</strong> (dostępne dla użytkownika)</h5><br>
     <a href="{% url 'checklist_add' %}" class="btn btn-outline-primary btn-sm">Utwórz nową listę</a>
-    
-<table>
-    {% if checklists %}
-    <tr>
-        <td><strong>Nazwa listy</strong></td>
-        <td><strong>Autor</strong></td>
-        <td><strong>Liczba pytań</strong></td>
-        <td><strong>Czy użyta w kontroli</strong></td>
-    </tr>
-        {% for c in checklists %}
-            <tr>
-                <td> <a href="{{ c.get_absolute_url }}">{{c.name}}</a></td>
-                <td>{% firstof c.created_by.user.username 'nieznany' %}</td>
-                <td>{{c.questions.count}}</td>
-                <td>Nie (zaślepka) </td>
-            </tr>
-        {% endfor %}
-    {% else %}
-        <br>
-        <p><strong>Brak list sprawdzających</strong></p>
-    {% endif %}
+    <br><br>
 
+{% if checklists %}
+<table id="tablesorted" class="table table-bordered table-striped tablesorter">    
+    <thead>
+        <tr>
+            <th>Nazwa listy</th>
+            <th>Autor</strong></th>
+            <th>Liczba pytań</th>
+            <th>Czy użyta w kontroli</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for c in checklists %}
+        <tr>
+            <td> <a href="{{ c.get_absolute_url }}">{{c.name}}</a></td>
+            <td>{% firstof c.created_by.user.username 'nieznany' %}</td>
+            <td>{{c.questions.count}}</td>
+            <td>Nie (zaślepka) </td>
+        </tr>
+        {% endfor %}
+    </tbody>
 </table>
+{% else %}
+<br><p><strong>Brak list sprawdzających</strong></p>
+{% endif %}
+<script type="text/javascript" src="{% static 'kontrolBack/tablesorter.js' %}"></script>
 {% endblock %}
 

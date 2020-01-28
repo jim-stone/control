@@ -1,14 +1,11 @@
 
-/* .padded {
-    margin: 10px;
-    padding: 10px;
-} */
-
-
 .form-check {
     display: none;
 }
 
+.navbar {
+    border: 1px solid salmon;
+}
 
 .forloop-counter {
     border-radius: 25px;
@@ -19,19 +16,26 @@
     color: white;
   }
 
-table, form, p {
+/* table, form, p {
     margin-left: 5em;
     margin-right: 5em;
+} */
+
+body {
+    margin-left: 5em;
+    margin-right: 5em;
+    margin-top: 1em;
 }
 
-.btn {
+
+/* .btn {
     margin-left: 6em;
-}
+} */
 
 
-h5 {
+/* h5 {
     margin-left: 4em;
-}
+} */
 
 
 td {
@@ -43,9 +47,9 @@ td.border-bottom {
 }
 
 
-.jk-margin {
+/* .jk-margin {
     margin-left: 5em
-}
+} */
 
 
 tbody:before {
@@ -54,6 +58,12 @@ tbody:before {
     line-height:40px;
     text-indent:-99999px;
     border-top: none;
+}
+
+
+
+.hidden {
+    display: none;
 }
 
 
