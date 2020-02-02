@@ -1,1 +1,1 @@
-web: gunicorn kontrole/kontrole.wsgi --log-file -
+web: gunicorn kontrole.wsgi --log-file -
