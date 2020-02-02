@@ -4,55 +4,58 @@
 
 {% block content %}
 
-<div class="row d-flex justify-content-center">
-<div class="col-md-8">
-    <br>
-    <h2 class="m-4">Edycja listy sprawdzającej: {{checklist.name}}</h2>
-    
-    <form action="" method="POST" novalidate>
-
-    <h3 class="m-4 jk-margin">Zawartość listy:</h3>
-    {% if questions %}
-    <table class="table table-striped">
-        <thead class="thead-dark">
-            <tr>
-                <th>#</th>
-                <th>Pytanie</th>
-                <th>Blok</th>
-                <th>Akcje</th>
-            </tr>
-        </thead>
-        <tbody>        
-            {% for q in questions %}
-            <tr>
-                <td><div class="forloop-counter">{{ forloop.counter }}</div></td>
-                <td>{{ q.question_name }}</td>
-                <td>{{ q.block_name }}</td>
-                <td> 
-                    <a href="{% url 'checklist_question_delete_view' checklist_pk=checklist.pk  question_pk=q.pk %}" class="btn btn-outline-danger">Usuń</a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
+    <table width='80%' align="center" padding='10em'>
+        <tr>
+            <td>
+            <h5><strong>Edycja listy sprawdzającej: {{checklist.name}} </strong></h5>
+            </td>
+        </tr>
+        <tr>
+            <td width='60%' valign='top'> 
+            <br><h5>Obecna zawartość listy</h5><br><br>
+            {% if questions %}
+            <table class="tablesorter">
+                <thead>
+                    <tr>
+                        <th>Pytanie</th>
+                        <th>Blok</th>
+                        <th>Akcje</th>
+                    </tr>
+                </thead>
+                <tbody>        
+                    {% for q in questions %}
+                    <tr>
+                        <td width='60%'>{{ q.question_name }}</td>
+                        <td>{{ q.block_name }}</td>
+                        <td align="right" width='20%'> 
+                            <a href="{% url 'checklist_question_delete_view' checklist_pk=checklist.pk  question_pk=q.pk %}" class="orangetext">Usuń</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% endif %}
+            </td>
+            <td></td>
+            <td valign="top">
+                <br><h5>Wybierz nowe pytania</h5><br><br>
+                <form action="" method="POST" novalidate>
+                    {% csrf_token %}
+                    <div class="base_menu">
+                        {{ form.block|as_crispy_field }}
+                    </div>
+                    <div class="checkbox-success checkbox-lg">
+                        {{ form.questions|as_crispy_field }}
+                    </div>
+                    <input type="submit" class="btn btn-outline-success float-right" id="submitQuestion" value="Dodaj">
+                </form>
+            </td>
+        </tr>
     </table>
-    {% endif %}
 
-    <br><h3 class="m-4 jk-margin">Wybierz nowe pytania:</h3>    
-    <!-- <form action="" method="POST"> -->
-        {% csrf_token %}
-        <div class="base_menu">
-            {{ form.block|as_crispy_field }}
-        </div>
-        
+<!-- </div>
+</div> -->
 
-        <div class="checkbox-success checkbox-lg">
-            {{ form.questions|as_crispy_field }}
-        </div>
-
-        <input type="submit" class="btn btn-outline-success float-right" id="submitQuestion" value="Dodaj">
-    </form>
-
-</div>
-</div>
+<script src="{% static 'kontrolBack/tablesorter.js' %}"></script>
 <script src="{% static 'kontrolBack/main.js' %}"></script>
 {% endblock content %}

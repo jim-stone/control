@@ -5,7 +5,7 @@ from .views import IndexView, ControlAdd, ControlListView,\
                    QuestionListView, ChecklistAddView, ChecklistListView,\
                    ChecklistEditView, delete_checklist_question, delete_control, ControlEditView,\
                    SearchQuestionView, ChecklistDetailViewSimplified, ControlChecklistEditView,\
-                   ControlChecklistView, AnswerAddView, AnswerEditView
+                   ControlChecklistView, AnswerAddView, AnswerEditView, delete_checklist, delete_answer
 
 router = routers.DefaultRouter()
 
@@ -26,11 +26,13 @@ urlpatterns = router.urls + [
     url(r'^listy/(?P<pk>\d+)/$', ChecklistDetailViewSimplified.as_view(), name='checklist_detail'),
     url(r'^edycja_listy/(?P<pk>\d+)/$', ChecklistEditView.as_view(), name='checklist_edit'),
     url(r'^listy$', ChecklistListView.as_view(), name='checklist_list'),
+    url(r'^delete/(?P<pk>\d+)$', delete_checklist, name='checklist_delete'),
     url(r'^delete/(?P<checklist_pk>\d+)/(?P<question_pk>\d+)/$', delete_checklist_question, name='checklist_question_delete_view'),
     url(r'^kontrole/(?P<pk>\d+)/lista$', ControlChecklistView.as_view(), name='control_checklist'),
     url(r'^kontrole/(?P<pk>\d+)/lista/edycja', ControlChecklistEditView.as_view(), name='control_checklist_edit'),
     url(r'^kontrole/delete/(?P<pk>\d+)/', delete_control, name='control_delete'),
     url(r'^kontrole/dodaj_odpowiedz/(?P<question_pk>\d+)/$', AnswerAddView.as_view(), name='answer_add'),
     url(r'^kontrole/edytuj_odpowiedz/(?P<pk>\d+)/$', AnswerEditView.as_view(), name='answer_edit'),
-
+    url(r'^kontrole/usun_odpowiedz/(?P<pk>\d+)/$', delete_answer, name='answer_delete'),
+    
 ]

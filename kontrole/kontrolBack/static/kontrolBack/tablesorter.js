@@ -15,9 +15,6 @@ $(document).ready(function() {
             // class names added to columns when sorted
             columns: [ "primary", "secondary", "tertiary" ],
       
-            // reset filters button
-            filter_reset : ".reset",
-      
             // extra css class name (string or array) added to the filter element (input or select)
             filter_cssFilter: [
               'form-control',
@@ -31,4 +28,5 @@ $(document).ready(function() {
       
           }
     });
+    // $('tbody:before').css('display','none');
   });

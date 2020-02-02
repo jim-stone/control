@@ -3,9 +3,12 @@
 
 {% block content %}
 <br><br>
-    <h5><strong>Listy sprawdzające</strong> (dostępne dla użytkownika)</h5><br>
+
+<div class="row d-flex justify-content-center">
+<div class="col-md-8">
+    <h5><strong>Listy sprawdzające</strong></h5><br>
     <a href="{% url 'checklist_add' %}" class="btn btn-outline-primary btn-sm">Utwórz nową listę</a>
-    <br><br>
+    <br><br>    
 
 {% if checklists %}
 <table id="tablesorted" class="table table-bordered table-striped tablesorter">    
@@ -14,16 +17,21 @@
             <th>Nazwa listy</th>
             <th>Autor</strong></th>
             <th>Liczba pytań</th>
-            <th>Czy użyta w kontroli</th>
+            <th>Akcje</th>
         </tr>
     </thead>
     <tbody>
         {% for c in checklists %}
         <tr>
-            <td> <a href="{{ c.get_absolute_url }}">{{c.name}}</a></td>
-            <td>{% firstof c.created_by.user.username 'nieznany' %}</td>
-            <td>{{c.questions.count}}</td>
-            <td>Nie (zaślepka) </td>
+            <!-- <td> <a href="{{ c.get_absolute_url }}">{{c.name}}</a></td> -->
+            <td width='45%'>{{c.name}}</td>
+            <td width='15%'>{% firstof c.created_by.user.username 'nieznany' %}</td>
+            <td width='15%'>{{c.questions.count}}</td>
+            <td>
+                <a href="{{ c.get_absolute_url }}" class="text_primary">Pytania</a>&nbsp;&nbsp;&nbsp;
+                <a href="{% url 'checklist_edit' pk=c.pk %}" class="greentext">Edycja</a>&nbsp;&nbsp;&nbsp;
+                <a href="{% url 'checklist_delete' pk=c.pk %}" class="orangetext">Usuń</a>
+            </td>
         </tr>
         {% endfor %}
     </tbody>
@@ -31,6 +39,10 @@
 {% else %}
 <br><p><strong>Brak list sprawdzających</strong></p>
 {% endif %}
+
+</div>
+</div>
+
 <script type="text/javascript" src="{% static 'kontrolBack/tablesorter.js' %}"></script>
 {% endblock %}
 

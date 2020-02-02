@@ -28,14 +28,17 @@ body {
 }
 
 
-/* .btn {
-    margin-left: 6em;
-} */
+.orangetext {
+    color: salmon;
+}
 
+.greentext {
+    color: olivedrab;
+}
 
-/* h5 {
-    margin-left: 4em;
-} */
+.bluetext {
+    color: mediumslateblue;
+}
 
 
 td {
@@ -47,9 +50,9 @@ td.border-bottom {
 }
 
 
-/* .jk-margin {
-    margin-left: 5em
-} */
+tbody::before {
+    content: none;
+}
 
 
 tbody:before {

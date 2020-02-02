@@ -44,10 +44,11 @@ class Project(models.Model):
     def __str__(self):
         return self.name
 
-
+    def __repr__(self):
+        return self.name
 
 class QuestionBlock (models.Model):
-    name = models.CharField(max_length=255, unique=True)
+    name = models.CharField(max_length=255, unique=True, verbose_name='blok')
     # block_order = models.IntegerField(default=99, null=True)
 
     def __repr__(self):
@@ -68,11 +69,14 @@ class Question (models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        verbose_name_plural = 'pytania'
+
 
 # założenie: 1 checklista do 1 kontroli w 1 podmiocie
 
 class Checklist(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, verbose_name='nazwa')
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     created_by = models.ForeignKey(to=InstitutionEmployee, related_name='checklists', on_delete=models.PROTECT, null=True)
     # questions = models.ManyToManyField(to=Question, related_name='checklists')
@@ -84,13 +88,17 @@ class Checklist(models.Model):
         return self.name
 
 class Control (models.Model):
-    name = models.CharField(max_length=2000)
-    project = models.ForeignKey(to=Project, related_name="controls_at_project", on_delete=models.PROTECT) 
-    controlling = models.ForeignKey(to=Institution, related_name="controls_by", on_delete=models.PROTECT)
-    date_start = models.DateTimeField()
-    date_end = models.DateTimeField()
-    checklist = models.ForeignKey(to=Checklist, null=True, blank=True, on_delete=models.PROTECT, related_name='controls')
+    name = models.CharField(max_length=2000, verbose_name='nazwa')
+    project = models.ForeignKey(to=Project, related_name="controls_at_project", on_delete=models.PROTECT, 
+        verbose_name='projekt') 
+    controlling = models.ForeignKey(to=Institution, related_name="controls_by",
+    verbose_name='instytucja kontrolująca', on_delete=models.PROTECT)
+    date_start = models.DateTimeField(verbose_name='początek')
+    date_end = models.DateTimeField(verbose_name='koniec')
+    checklist = models.ForeignKey(to=Checklist, null=True, blank=True,
+    on_delete=models.PROTECT, related_name='controls', verbose_name='lista sprawdzająca')
     status = models.IntegerField(choices=control_status, default=0)
+
 
 
 # pytanie wybrane do listy jest dla niej "mrożone"
@@ -114,9 +122,9 @@ class QuestionInControl (models.Model):
         return self.question_name
 
 class Answer(models.Model):
-    question = models.OneToOneField(to=QuestionInControl, on_delete=models.PROTECT)
-    content = models.IntegerField(choices=answer_choices)
-    comment = models.CharField(max_length=10000, null=True, blank=True)
+    question = models.OneToOneField(to=QuestionInControl, on_delete=models.PROTECT, verbose_name="pytanie")
+    content = models.IntegerField(choices=answer_choices, verbose_name="odpowiedź")
+    comment = models.CharField(max_length=10000, null=True, blank=True, verbose_name="komentarz")
 
     # class Meta:
     #     unique_together = ('question', 'content')

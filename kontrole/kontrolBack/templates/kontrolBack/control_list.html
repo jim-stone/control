@@ -1,88 +1,52 @@
 {% extends 'kontrolBack/base.html' %}
+{% load static %}
+
 
 {% block content %}
 <br><br>
-    <h5><strong>Kontrole</strong> (dostępne dla użytkownika)</h5><br>
-    <a href="{% url 'control_add' %}" class="btn btn-outline-primary btn-sm">Utwórz nową kontrolę</a>
-    
-<table class="table-striped">
-    {% if controls %}
-    <tr>
-        <td><strong>Kontrolujący</strong></td>
-        <td><strong>Kontrolowany</strong></td>
-        <td><strong>Projekt</strong></td>
-        <td><strong>Status</strong></td>
-        <td style='text-align: center;'><strong>Akcje</strong></td>
-    </tr>
+<div class="row d-flex justify-content-center">
+<div class="col-md-8">
+    <h5><strong>Kontrole</strong></h5><br>
+    <a href="{% url 'control_add' %}" class="btn btn-outline-primary btn-sm">Utwórz nową kontrolę</a><br><br>
+
+{% if controls %}
+<table id="tablesorted" class="table table-bordered table-striped tablesorter">    
+    <thead>
+        <tr>
+            <th>Kontrolujący</th>
+            <th>Kontrolowany</th>
+            <th>Projekt</th>
+            <th>Status</th>
+            <th style='text-align: center;'>Akcje</th>
+        </tr>
+    </thead>
+    <tbody>
         {% for c in controls %}
-            <tr>
-                <td>{{c.controlling}}</a></td>
-                <td>{{c.project.beneficiary_name}}</td>
-                <td>{{c.project.name}}</td>
-                <td>{{c.get_status_display}}</td>
-                <td> 
-                    <a class="btn btn-outline-primary btn-sm" href="{% url 'control_checklist' pk=c.pk %}">Lista</a><br><br>
-                    {% if c.status == 0 %}
-                    <a class="btn btn-outline-danger btn-sm" href="{% url 'control_delete' pk=c.pk %}">Usuń</a><br><br>
-                    {% endif %}
-                    <a class="btn btn-outline-primary btn-sm" href="{% url 'control_edit' pk=c.pk %}">Edytuj</a>
-                </td>
-            </tr>
+        <tr>
+            <td>{{c.controlling}}</a></td>
+            <td>{{c.project.beneficiary_name}}</td>
+            <td>{{c.project.name}}</td>
+            <td>{{c.get_status_display}}</td>
+            <td> 
+                <a class="text-primary" href="{% url 'control_checklist' pk=c.pk %}">Lista</a>
+                {% if c.status == 0 %}
+                <a class="orangetext" href="{% url 'control_delete' pk=c.pk %}">Usuń</a>
+                {% endif %}
+                <a class="greentext" href="{% url 'control_edit' pk=c.pk %}">Edycja</a>
+            </td>
+        </tr>
         {% endfor %}
-    {% else %}
-        <br>
-        <p><strong>Brak kontroli dostępnych dla użytkownika.</strong></p>
-    {% endif %}
-
+    </tbody>
 </table>
+{% else %}
+<br><p><strong>Brak kontroli dostępnych dla użytkownika</strong></p>
+{% endif %}
+</div>
+</div>
 
+<script type="text/javascript" src="{% static 'kontrolBack/tablesorter.js' %}"></script>
 {% endblock %}
 
-
-
-
-<!-- <div class="row d-flex justify-content-center">
-<div class="col-md-8">
-    <br>
-    <h2 class="m-4">Dostępne kontrole</h2>
-
-    <div class="row m-4 header">
-        <div class="col-md-2 font-weight-bold">Kontrolujący </div>
-        <div class="col-md-2 font-weight-bold">Kontrolowany</div>
-        <div class="col-md-3 font-weight-bold">Projekt</div>
-        <div class="col-md-3 font-weight-bold">Status</div>
-        <div class="col-md-1 font-weight-bold"></div>
-    </div>
-    <hr>
-    
-    {% for c in controls %}
-
-    <div class="row m-4">
-        <div class="col-md-2">
-            {{ c.controlling}}
-        </div>
-        <div class="col-md-2">
-            {{ c.project.name}}
-        </div>
-        <div class="col-md-3">
-            {{ c.project.beneficiary_name }}
-        </div>
-        <div class="col-md-3">
-            {{ c.get_status_display }}
-        </div>
-        <div class="col-md-1">
-            <a class="btn btn-outline-primary btn-sm" href="{% url 'control_edit' pk=c.pk %}">Edytuj</a>
-        </div>
-    </div>
-    <hr>
-
-    {% empty %}
-    <p>Nie znaleziono konttroli dostępnych dla użytkownika.</p>
-
-    {% endfor %}
-
-</div>
-</div> -->
 
 
 

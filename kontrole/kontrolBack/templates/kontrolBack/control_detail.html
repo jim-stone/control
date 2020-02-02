@@ -1,28 +1,40 @@
 {% extends 'kontrolBack/base.html' %}
-{% load static %}
 {% load crispy_forms_tags %}
+
+{% block extra_styles_and_scripts %}
+<!-- datepicker -->
+<!-- XDSoft DateTimePicker -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css" integrity="sha256-DOS9W6NR+NFe1fUhEE0PGKY/fubbUCnOfTje2JMDw3Y=" crossorigin="anonymous" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js" integrity="sha256-FEqEelWI3WouFOo2VWP/uJfs1y8KJ++FLh2Lbqc8SJk=" crossorigin="anonymous"></script>
+</head>
+
+{% endblock %}
+
 
 {% block content %}
 
 <div class="row d-flex justify-content-center">
-<div class="col-md-8">
+<div class="col-md-6">
     <br>
     <h2 class="m-4">Edytuj kontrolę: {{control.name}}</h2>
-        <p>
-            W tym widoku możesz zmienić dane kontroli. W szczególności,
-            możesz zarejestrować jej rozpoczęcie lub zakończenie poprzez
-            zmianę statusu.
-        </p>
-
-
-    </table>
-  
-    <form action="" method="POST">
-  
-    <!-- <form action="" method="POST"> -->
+    <form action="" method="POST" class="m-4" novalidate>
         {% csrf_token %}
         {{ form|crispy}}
-
+        <script>
+            $(function () {
+                $("#id_date_start").datetimepicker({
+                format: 'd/m/Y',
+                timepicker:false,
+                });
+            });
+            
+            $(function () {
+                $("#id_date_end").datetimepicker({
+                format: 'd/m/Y',
+                timepicker:false,
+                });
+            });
+        </script>
         <br>
         <a class="btn btn-outline-danger float-left" href="{% url 'control_list' %}"> Anuluj </a>
         <input type="submit" class="btn btn-outline-success float-right" id="change_control_data" value="Zmień dane kontroli">
@@ -30,5 +42,4 @@
 
 </div>
 </div>
-<script src="{% static 'kontrolBack/main.js' %}"></script>
 {% endblock content %}

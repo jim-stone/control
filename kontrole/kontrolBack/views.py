@@ -6,14 +6,16 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import ProtectedError
 
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, FormView
 
 from .models import Control, Question, QuestionBlock, Checklist, QuestionInList,\
-     Institution, QuestionInControl, Answer
+     Institution, QuestionInControl, Answer, Project
 
 from .forms import SearchQuestionForm, AddQuestionToListForm, AddControlForm, AddAnswerToQuestionForm
 
+import json
 
 class IndexView(View):
     def get(self, request):
@@ -140,7 +142,6 @@ class ChecklistEditView(LoginRequiredMixin, View):
 
 
 
-
 # tworzy kontrolę
 class ControlAdd(LoginRequiredMixin, CreateView):
     form_class = AddControlForm
@@ -148,15 +149,24 @@ class ControlAdd(LoginRequiredMixin, CreateView):
     template_name = 'kontrolBack/control_form.html'
     
     def get(self, request, *args, **kwargs):
-        
-        if request.user.is_superuser:
-            form = AddControlForm()
-        else:
-            user_institution = Institution.objects.filter(pk=self.request.user.institutionemployee.institution.pk)
-            form = AddControlForm(initial={'controlling': user_institution[0]})           
-            form.fields['controlling'].queryset = user_institution
-            form.fields['controlling'].disabled = True
-        return render (request, self.template_name, {'form': form})
+        # if request.user.is_superuser:
+        # form = AddControlForm()
+        user_institution = Institution.objects.filter(pk=self.request.user.institutionemployee.institution.pk)
+        user_programme = user_institution[0].programme
+        accessible_projects = Project.objects.filter(programme=user_programme)
+        form = AddControlForm(initial={'controlling': user_institution[0]})           
+        form.fields['controlling'].queryset = user_institution
+        form.fields['project'].queryset = accessible_projects
+        project_titles = list(accessible_projects.values_list('name', flat=True))
+        project_ids = list(accessible_projects.values_list('pk', flat=True))
+        projects = [{'label': z[0], 'value':z[1]} for z in zip(project_titles, project_ids)]
+        print ([projects])
+        # print(project_titles, type(project_titles))
+        # form.fields['controlling'].disabled = True
+        # project_titles = json.dumps(project_titles)
+
+        return render (request, self.template_name, {
+            'form': form, 'projects': projects })
 
     def form_valid(self, form):
         control = form.save(commit=False)
@@ -193,22 +203,77 @@ def delete_checklist_question (request, checklist_pk, question_pk):
     object.delete()
     return redirect(to='checklist_edit', pk=checklist_pk)
 
+
 def delete_control (request, pk):
     object = Control.objects.get(pk=pk)
     object.delete()
     return redirect(to='control_list')
 
 
+def delete_checklist (request, pk):
+    object = Checklist.objects.get(pk=pk)
+    print ("OBJ:", object)
+    try:
+        object.delete()
+        return redirect(to='checklist_list')
+    except ProtectedError as e:
+        messages.error (request, "Lista została użyta w co najmniej jednej kontroli. Aby usunąć listę należy najpierw usunąć jej powiązania z kontrolami.")
+        return redirect(to='checklist_detail', pk=pk)
+    
+
+def delete_answer (request, pk):
+    object = Answer.objects.get(pk=pk)
+    control = object.question.control
+    object.delete()
+    return redirect(to='control_checklist', pk=control.pk)
+
+
+
+
+
 
 
 class ControlEditView(LoginRequiredMixin, UpdateView):
     model = Control
-    fields = 'name project controlling date_start date_end  status'.split()
+    fields = 'status name project date_start date_end checklist'.split()
     context_object_name = 'control'
     template_name = 'kontrolBack/control_detail.html'
     success_url = '/kontrole/'
     
+    # def get_form(self, form_class=None):
+    #     print ('Form instantiated')
+    #     form = super().get_form(form_class=form_class)
+    #     # form = AddControlForm(initial={'controlling': user_institution[0]})           
+    #     # form.fields['controlling'].queryset = user_institution
+    #     return form
+
     def form_valid(self, form):
+        new_control = form.save(commit=False)
+        old_control = Control.objects.get(pk=new_control.pk)
+        
+        # czy można tak hakować...
+        if new_control.checklist != old_control.checklist:
+            if  new_control.status != 0:
+                msg = 'Nie można zmienić listy sprawdzającej dla kontroli o statusie innym niż w "przygotowaniu".'
+                messages.error(self.request, msg)
+                return super().form_invalid(form)
+            try:
+                new_control.questions.all().delete()
+            except ProtectedError:
+                msg = '''Nie można zmienić listy sprawdzającej ponieważ udzielono już odpowiedzi na niektóre pytania.
+                <br>Możesz spróbować usunąć najpierw te odpowiedzi.'''
+                messages.error(self.request, msg)
+                return super().form_invalid(form)
+
+            new_control.save()
+            for q in new_control.checklist.questions.all():
+                QuestionInControl.objects.create(
+                    question_name = q.question_name,
+                    block_name = q.block_name,
+                    control = new_control
+                )
+
+        # new_control.save()
         messages.success(self.request, 'Zmiany zostały zapisane.')
         return super().form_valid(form)
 
@@ -233,6 +298,7 @@ class ControlChecklistView(LoginRequiredMixin, View):
         ctx['control'] = control
         ctx['questions'] = questions
         return render(request, 'kontrolBack/ControlChecklist.html', ctx)
+
 
 # edycja checklisty
 # widok na razie "pusty", główna funkcjonalność w AnswerAddView
