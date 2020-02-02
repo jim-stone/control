@@ -11,6 +11,9 @@ django = "*"
 djangorestframework = "*"
 django-rest-knox = "*"
 django-crispy-forms = "*"
+gunicorn = "*"
+dj-database-url = "*"
+whitenoise = "*"
 
 [requires]
 python_version = "3.6"
