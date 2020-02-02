@@ -28,7 +28,10 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'c)_uld=$5y_x1shmgt3%t(ol1ie(rk
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DJANGO_DEBUG', '') != 'False'
 
-ALLOWED_HOSTS = ['master-controller.herokuapp.com', '127.0.0.1']
+ALLOWED_HOSTS = ['master-controller.herokuapp.com', 
+    'damp-bastion-23462.herokuapp.com',
+    '127.0.0.1'
+]
 
 
 # Application definition
