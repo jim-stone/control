@@ -37,11 +37,8 @@ class SearchQuestionView(LoginRequiredMixin, FormView):
     ctx = {} 
     def get(self, request):
         query = self.request.GET.get('search_input')
-        
-        print (self.request.__dict__)
         if not query is None:
             if query != '':
-                print ('query: ', query)
                 questions = Question.objects.filter(name__icontains=query)
                 self.ctx['questions'] = questions
                 if not questions:
@@ -111,14 +108,10 @@ class ChecklistEditView(LoginRequiredMixin, View):
                 QuestionInList.objects.create(question_name=q, block_name=block) for q in questions
                 ]
 
-            # print(questions)
-            # print(qs_to_create)
-
             try:
                 # dziwna walidacja
                 qs_for_checklist = list(checklist.questions.values_list('question_name', flat=True))
                 for new_q in qs_to_create:
-                    print(new_q.question_name.name, 'in??', qs_for_checklist)
                     assert new_q.question_name.name not in qs_for_checklist
 
                 # koniec dziwnej walidacji
@@ -127,8 +120,6 @@ class ChecklistEditView(LoginRequiredMixin, View):
             except Exception as e:
                 messages.error(request, "Coś się nie zgadza. Prawdopodobnie \
                     próbujesz dodać do listy pytanie, które już na niej jest.") 
-                print(e)
-            # print ([q.checklist.name for q in QuestionInList.objects.all()])
             finally:
                 form = AddQuestionToListForm() # to załatwia problem błędnego odświeżania widoku po zapisaniu!!!
 
@@ -160,10 +151,6 @@ class ControlAdd(LoginRequiredMixin, CreateView):
         project_titles = list(accessible_projects.values_list('name', flat=True))
         project_ids = list(accessible_projects.values_list('pk', flat=True))
         projects = [{'label': z[0], 'value':z[1]} for z in zip(project_titles, project_ids)]
-        print ([projects])
-        # print(project_titles, type(project_titles))
-        # form.fields['controlling'].disabled = True
-        # project_titles = json.dumps(project_titles)
 
         return render (request, self.template_name, {
             'form': form, 'projects': projects })
@@ -212,7 +199,6 @@ def delete_control (request, pk):
 
 def delete_checklist (request, pk):
     object = Checklist.objects.get(pk=pk)
-    print ("OBJ:", object)
     try:
         object.delete()
         return redirect(to='checklist_list')
@@ -226,11 +212,6 @@ def delete_answer (request, pk):
     control = object.question.control
     object.delete()
     return redirect(to='control_checklist', pk=control.pk)
-
-
-
-
-
 
 
 class ControlEditView(LoginRequiredMixin, UpdateView):
