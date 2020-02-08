@@ -1,7 +1,6 @@
 {% extends 'kontrolBack/base.html' %}
 {% load static %}
 
-
 {% block content %}
 <br><br>
 <div class="row d-flex justify-content-center">
@@ -27,10 +26,10 @@
             <td>{{c.project.beneficiary_name}}</td>
             <td>{{c.project.name}}</td>
             <td>{{c.get_status_display}}</td>
-            <td> 
-                <a class="text-primary" href="{% url 'control_checklist' pk=c.pk %}">Lista</a>
+            <td  width='20%'> 
+                <a class="text-primary" href="{% url 'control_checklist' pk=c.pk %}">Lista</a>&nbsp;&nbsp;&nbsp;
                 {% if c.status == 0 %}
-                <a class="orangetext" href="{% url 'control_delete' pk=c.pk %}">Usuń</a>
+                <a class="orangetext" href="{% url 'control_delete' pk=c.pk %}">Usuń</a>&nbsp;&nbsp;&nbsp;
                 {% endif %}
                 <a class="greentext" href="{% url 'control_edit' pk=c.pk %}">Edycja</a>
             </td>

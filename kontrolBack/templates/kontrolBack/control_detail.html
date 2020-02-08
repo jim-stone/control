@@ -7,33 +7,43 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css" integrity="sha256-DOS9W6NR+NFe1fUhEE0PGKY/fubbUCnOfTje2JMDw3Y=" crossorigin="anonymous" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js" integrity="sha256-FEqEelWI3WouFOo2VWP/uJfs1y8KJ++FLh2Lbqc8SJk=" crossorigin="anonymous"></script>
 </head>
-
 {% endblock %}
 
 
 {% block content %}
+{{ projects|json_script:"js00" }}
 
 <div class="row d-flex justify-content-center">
 <div class="col-md-6">
     <br>
     <h2 class="m-4">Edytuj kontrolę: {{control.name}}</h2>
-    <form action="" method="POST" class="m-4" novalidate>
+    <form method="POST" class="m-4" novalidate>
         {% csrf_token %}
-        {{ form|crispy}}
-        <script>
+        {{ form|crispy }}
+        
+        <script id="js00">
             $(function () {
                 $("#id_date_start").datetimepicker({
-                format: 'd/m/Y',
+                format: 'd.m.Y',
                 timepicker:false,
                 });
             });
             
             $(function () {
                 $("#id_date_end").datetimepicker({
-                format: 'd/m/Y',
+                format: 'd.m.Y',
                 timepicker:false,
                 });
             });
+
+            let projects = JSON.parse($('#js00').text())
+            console.log("Projects: ", projects);
+
+            $('#id_project').autocomplete (
+            {source:projects},
+            {minLength:3},
+        )
+
         </script>
         <br>
         <a class="btn btn-outline-danger float-left" href="{% url 'control_list' %}"> Anuluj </a>

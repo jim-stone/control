@@ -139,15 +139,25 @@ class ControlAdd(LoginRequiredMixin, CreateView):
     success_url = 'kontrole'
     template_name = 'kontrolBack/control_form.html'
     
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs.update({'user': self.request.user})
+        return kwargs
+
+
     def get(self, request, *args, **kwargs):
-        # if request.user.is_superuser:
-        # form = AddControlForm()
         user_institution = Institution.objects.filter(pk=self.request.user.institutionemployee.institution.pk)
         user_programme = user_institution[0].programme
         accessible_projects = Project.objects.filter(programme=user_programme)
         form = AddControlForm(initial={'controlling': user_institution[0]})           
         form.fields['controlling'].queryset = user_institution
         form.fields['project'].queryset = accessible_projects
+
+        accessible_checklists = Checklist.objects.filter(
+                created_by__institution__programme=user_programme
+            )         
+        form.fields['checklist'].queryset = accessible_checklists
+
         project_titles = list(accessible_projects.values_list('name', flat=True))
         project_ids = list(accessible_projects.values_list('pk', flat=True))
         projects = [{'label': z[0], 'value':z[1]} for z in zip(project_titles, project_ids)]
@@ -216,17 +226,30 @@ def delete_answer (request, pk):
 
 class ControlEditView(LoginRequiredMixin, UpdateView):
     model = Control
-    fields = 'status name project date_start date_end checklist'.split()
     context_object_name = 'control'
     template_name = 'kontrolBack/control_detail.html'
     success_url = '/kontrole/'
-    
-    # def get_form(self, form_class=None):
-    #     print ('Form instantiated')
-    #     form = super().get_form(form_class=form_class)
-    #     # form = AddControlForm(initial={'controlling': user_institution[0]})           
-    #     # form.fields['controlling'].queryset = user_institution
-    #     return form
+    form_class = AddControlForm
+
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs.update({'user': self.request.user})
+        return kwargs
+
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        user_institution = Institution.objects.filter(pk=self.request.user.institutionemployee.institution.pk)
+        user_programme = user_institution[0].programme
+        accessible_projects = Project.objects.filter(programme=user_programme)
+              
+        project_titles = list(accessible_projects.values_list('name', flat=True))
+        project_ids = list(accessible_projects.values_list('pk', flat=True))
+        projects = [{'label': z[0], 'value':z[1]} for z in zip(project_titles, project_ids)]        
+        ctx['projects'] = projects
+        print(ctx['projects'])
+        return ctx
 
     def form_valid(self, form):
         new_control = form.save(commit=False)
@@ -259,6 +282,7 @@ class ControlEditView(LoginRequiredMixin, UpdateView):
         return super().form_valid(form)
 
     def form_invalid(self, form):
+        print(form.fields['date_start'].__dict__)
         messages.error(self.request, 'Aby zapisać zmiany wypełnij prawidłowo formularz.')
         return super().form_invalid(form)
 

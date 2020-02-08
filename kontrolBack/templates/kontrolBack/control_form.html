@@ -11,7 +11,6 @@
 
 
 {% block content %}
-
 {{ projects|json_script:"js00" }}
 
 <div class="row d-flex justify-content-center">
@@ -19,37 +18,37 @@
     <br>
     <h2 class="m-4">Nowa kontrola</h2>
     <form method="POST" class="m-4" novalidate>
-            {% csrf_token %}
-            {{ form|crispy }}
+        {% csrf_token %}
+        {{ form|crispy }}
 
-            <script id="js00">
-            $(function () {
-                $("#id_date_start").datetimepicker({
-                format: 'd/m/Y',
-                timepicker: false,
-                });
+        <script id="js00">
+        $(function () {
+            $("#id_date_start").datetimepicker({
+            format: 'd.m.Y',
+            timepicker: false,
             });
-            
-            $(function () {
-                $("#id_date_end").datetimepicker({
-                format: 'd/m/Y',
-                timepicker:false,
-                });
+        });
+        
+        $(function () {
+            $("#id_date_end").datetimepicker({
+            format: 'd.m.Y',
+            timepicker:false,
             });
+        });
 
-            let projects = JSON.parse($('#js00').text())
-            console.log(projects);
+        let projects = JSON.parse($('#js00').text())
+        console.log(projects);
 
-            $('#id_project').autocomplete (
-                {source:projects},
-                {minLength:3},
-            )
+        $('#id_project').autocomplete (
+            {source:projects},
+            {minLength:3},
+        )
 
-            </script>
-            <br>
-            <button type="submit" class="btn btn-outline-success float-right">Zapisz</button>
-            <a class="btn btn-outline-danger float-left" href="{% url 'checklist_add' %}">Anuluj (nowa checklista)</a>
-            <br>
+        </script>
+        <br>
+        <button type="submit" class="btn btn-outline-success float-right">Zapisz</button>
+        <a class="btn btn-outline-danger float-left" href="{% url 'checklist_add' %}">Anuluj (nowa checklista)</a>
+        <br>
     </form>
 </div>
 </div>
