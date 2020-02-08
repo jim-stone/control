@@ -14,8 +14,7 @@ from .models import Control, Question, QuestionBlock, Checklist, QuestionInList,
      Institution, QuestionInControl, Answer, Project
 
 from .forms import SearchQuestionForm, AddQuestionToListForm, AddControlForm, AddAnswerToQuestionForm
-
-import json
+from .mixins import user_has_perm_to_object
 
 class IndexView(View):
     def get(self, request):
@@ -230,25 +229,27 @@ class ControlEditView(LoginRequiredMixin, UpdateView):
     template_name = 'kontrolBack/control_detail.html'
     success_url = '/kontrole/'
     form_class = AddControlForm
-
+    
+    def render_to_response(self, context, **response_kwargs):
+        if not user_has_perm_to_object(self.request.user, self.object):
+            return HttpResponse('Brak uprawnień. Ten projekt jest realizowany w innym programie.', status=401)
+        return super().render_to_response(context, **response_kwargs)
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs.update({'user': self.request.user})
         return kwargs
 
-
     def get_context_data(self, **kwargs):
+        print (kwargs)
         ctx = super().get_context_data(**kwargs)
         user_institution = Institution.objects.filter(pk=self.request.user.institutionemployee.institution.pk)
         user_programme = user_institution[0].programme
-        accessible_projects = Project.objects.filter(programme=user_programme)
-              
+        accessible_projects = Project.objects.filter(programme=user_programme)              
         project_titles = list(accessible_projects.values_list('name', flat=True))
         project_ids = list(accessible_projects.values_list('pk', flat=True))
         projects = [{'label': z[0], 'value':z[1]} for z in zip(project_titles, project_ids)]        
         ctx['projects'] = projects
-        print(ctx['projects'])
         return ctx
 
     def form_valid(self, form):
