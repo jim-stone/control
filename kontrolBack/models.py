@@ -18,15 +18,19 @@ answer_choices = [
 
 
 class Institution (models.Model):
-    programme = models.CharField(max_length=10) # todo: add programme model
-    code = models.CharField (max_length=10)
+    programme = models.CharField(max_length=10)  # todo: add programme model
+    code = models.CharField(max_length=10)
     name = models.CharField(max_length=512)
     is_coordinator = models.BooleanField(default=False)
 
     def __repr__(self):
         return self.name
+
     def __str__(self):
         return self.name
+
+    class Meta:
+        verbose_name_plural = 'instytucje'
 
 
 class InstitutionEmployee(models.Model):
@@ -35,7 +39,7 @@ class InstitutionEmployee(models.Model):
 
 
 class Project(models.Model):
-    programme = models.CharField(max_length=10) # todo: add programme model
+    programme = models.CharField(max_length=10)  # todo: add programme model
     code = models.CharField(max_length=512)
     name = models.CharField(max_length=512)
     beneficiary_name = models.CharField(max_length=512)
@@ -47,25 +51,31 @@ class Project(models.Model):
     def __repr__(self):
         return self.name
 
-class QuestionBlock (models.Model):
+
+class QuestionBlock(models.Model):
     name = models.CharField(max_length=255, unique=True, verbose_name='blok')
     # block_order = models.IntegerField(default=99, null=True)
 
     def __repr__(self):
         return self.name
+
     def __str__(self):
         return self.name
+
+    class Meta:
+        verbose_name_plural = 'bloki pytań'
 
 
 class Question (models.Model):
     name = models.CharField(max_length=500, unique=True)
-    block = models.ForeignKey(to=QuestionBlock, related_name='questions', on_delete=models.PROTECT)
+    block = models.ForeignKey(
+        to=QuestionBlock, related_name='questions', on_delete=models.PROTECT)
     order_in_block = models.IntegerField(null=True)
     is_active = models.BooleanField(default=True)
-    # is_replacement_for = models.OneToOneField(to='Question', on_delete=models.PROTECT, editable=False, null=True, default=None)
 
     def __repr__(self):
         return self.name
+
     def __str__(self):
         return self.name
 
@@ -78,27 +88,31 @@ class Question (models.Model):
 class Checklist(models.Model):
     name = models.CharField(max_length=255, verbose_name='nazwa')
     created_at = models.DateTimeField(auto_now_add=True, null=True)
-    created_by = models.ForeignKey(to=InstitutionEmployee, related_name='checklists', on_delete=models.PROTECT, null=True)
-    # questions = models.ManyToManyField(to=Question, related_name='checklists')
+    created_by = models.ForeignKey(
+        to=InstitutionEmployee, related_name='checklists',
+        on_delete=models.PROTECT, null=True)
 
-    def get_absolute_url(self,*args,**kwargs):
-        return reverse('checklist_detail',kwargs={'pk': self.pk})
+    def get_absolute_url(self, *args, **kwargs):
+        return reverse('checklist_detail', kwargs={'pk': self.pk})
 
     def __str__(self):
         return self.name
 
+
 class Control (models.Model):
     name = models.CharField(max_length=2000, verbose_name='nazwa')
-    project = models.ForeignKey(to=Project, related_name="controls_at_project", on_delete=models.PROTECT, 
-        verbose_name='projekt') 
-    controlling = models.ForeignKey(to=Institution, related_name="controls_by",
-    verbose_name='instytucja kontrolująca', on_delete=models.PROTECT)
+    project = models.ForeignKey(
+        to=Project, related_name="controls_at_project",
+        on_delete=models.PROTECT, verbose_name='projekt')
+    controlling = models.ForeignKey(
+        to=Institution, related_name="controls_by",
+        verbose_name='instytucja kontrolująca', on_delete=models.PROTECT)
     date_start = models.DateTimeField(verbose_name='początek')
     date_end = models.DateTimeField(verbose_name='koniec')
-    checklist = models.ForeignKey(to=Checklist, null=True, blank=True,
-    on_delete=models.PROTECT, related_name='controls', verbose_name='lista sprawdzająca')
+    checklist = models.ForeignKey(
+        to=Checklist, null=True, blank=True, on_delete=models.PROTECT,
+        related_name='controls', verbose_name='lista sprawdzająca')
     status = models.IntegerField(choices=control_status, default=0)
-
 
 
 # pytanie wybrane do listy jest dla niej "mrożone"
@@ -114,24 +128,23 @@ class QuestionInList (models.Model):
 class QuestionInControl (models.Model):
     question_name = models.CharField(max_length=500)
     block_name = models.CharField(max_length=255)
-    control = models.ForeignKey(to=Control, on_delete=models.CASCADE, related_name='questions')
+    control = models.ForeignKey(
+        to=Control, on_delete=models.CASCADE, related_name='questions')
 
     def __str__(self):
         return self.question_name
+
     def __repr__(self):
         return self.question_name
 
+
 class Answer(models.Model):
-    question = models.OneToOneField(to=QuestionInControl, on_delete=models.PROTECT, verbose_name="pytanie")
-    content = models.IntegerField(choices=answer_choices, verbose_name="odpowiedź")
-    comment = models.CharField(max_length=10000, null=True, blank=True, verbose_name="komentarz")
-
-    # class Meta:
-    #     unique_together = ('question', 'content')
-
-
-# class Comment (models.Model):
-#     answer = models.OneToOneField(Answer, null=True, on_delete=models.PROTECT)
+    question = models.OneToOneField(
+        to=QuestionInControl, on_delete=models.PROTECT, verbose_name="pytanie")
+    content = models.IntegerField(
+        choices=answer_choices, verbose_name="odpowiedź")
+    comment = models.CharField(
+        max_length=10000, null=True, blank=True, verbose_name="komentarz")
 
 
 class ResultInfo (models.Model):
@@ -139,30 +152,13 @@ class ResultInfo (models.Model):
 
 
 class Finding(models.Model):
-    result_info = models.ForeignKey(to=ResultInfo, related_name='findings', on_delete=models.PROTECT)
+    result_info = models.ForeignKey(
+        to=ResultInfo, related_name='findings', on_delete=models.PROTECT)
     content = models.CharField(max_length=10000)
 
 
 class Recommendation (models.Model):
-    result_info = models.ForeignKey(to=ResultInfo, related_name='recommendations', on_delete=models.PROTECT)
+    result_info = models.ForeignKey(
+        to=ResultInfo, related_name='recommendations',
+        on_delete=models.PROTECT)
     content = models.CharField(max_length=10000)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

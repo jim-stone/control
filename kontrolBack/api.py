@@ -6,7 +6,7 @@ from .serializers import QuestionSerializer, QuestionBlockSerializer, Institutio
 class QuestionViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Question.objects.all()
     serializer_class = QuestionSerializer
-    permission_classer = [
+    permission_classes = [
         permissions.AllowAny
     ]
 
@@ -14,13 +14,14 @@ class QuestionViewSet(viewsets.ReadOnlyModelViewSet):
 class QuestionBlockViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = QuestionBlock.objects.all()
     serializer_class = QuestionBlockSerializer
-    permission_classer = [
+    permission_classes = [
         permissions.AllowAny
-    ]    
+    ]
+
 
 class InstitutionViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Institution.objects.all()
     serializer_class = InstitutionSerializer
-    permission_classer = [
+    permission_classes = [
         permissions.AllowAny
-    ]    
+    ]

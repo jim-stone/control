@@ -2,106 +2,136 @@
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.2/css/theme.bootstrap_4.min.css">
-    <!-- jquery UI -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" integrity="sha256-rByPlHULObEjJ6XQxW/flG2r+22R5dKiAoef+aXWfik=" crossorigin="anonymous" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.structure.min.css" integrity="sha256-rxais37anKUnpL5QzSYte+JnIsmkGmLG+ZhKSkZkwVM=" crossorigin="anonymous" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.theme.min.css" integrity="sha256-AjyoyaRtnGVTywKH/Isxxu5PXI0s4CcE0BzPAX83Ppc=" crossorigin="anonymous" />    
-    <!-- end -->
-    <link rel="stylesheet" href="{% static 'kontrolBack/style.css'%}">
-    <!-- jquery -->
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-    <!-- jquery tablesorter -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.2/js/jquery.tablesorter.js"></script> 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.2/js/jquery.tablesorter.widgets.js"></script> 
-    <!-- jquery UI -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js" integrity="sha256-KM512VNnjElC30ehFwehXjx1YCHPiQkOPmqnrWtpccM=" crossorigin="anonymous"></script>
-    {% block extra_styles_and_scripts %}
-    {% endblock %}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+    integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.2/css/theme.bootstrap_4.min.css">
+  <!-- jquery UI -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css"
+    integrity="sha256-rByPlHULObEjJ6XQxW/flG2r+22R5dKiAoef+aXWfik=" crossorigin="anonymous" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.structure.min.css"
+    integrity="sha256-rxais37anKUnpL5QzSYte+JnIsmkGmLG+ZhKSkZkwVM=" crossorigin="anonymous" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.theme.min.css"
+    integrity="sha256-AjyoyaRtnGVTywKH/Isxxu5PXI0s4CcE0BzPAX83Ppc=" crossorigin="anonymous" />
+  <!-- end -->
+  <link rel="stylesheet" href="{% static 'kontrolBack/style.css'%}">
+  <!-- jquery -->
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <!-- jquery tablesorter -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.2/js/jquery.tablesorter.js"></script>
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.2/js/jquery.tablesorter.widgets.js"></script>
+  <!-- jquery UI -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"
+    integrity="sha256-KM512VNnjElC30ehFwehXjx1YCHPiQkOPmqnrWtpccM=" crossorigin="anonymous"></script>
+  {% block extra_styles_and_scripts %}
+  {% endblock %}
 
-    <title>Kontrole</title>
+  <title>Kontrole</title>
 </head>
+
 <body>
-             <nav class="navbar navbar-expand-lg navbar-light bg-light">
-                <a class="navbar-brand" href="{% url 'index' %}">MasterKontroler</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                  <span class="navbar-toggler-icon"></span>
-                </button>
-              
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                  <ul class="navbar-nav mr-auto">
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="{% url 'index' %}">MasterKontroler</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
 
-                    <!-- zeroth dropdown -->
-                    <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="" id="prepareDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Pytania
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                      <a class="dropdown-item" href="{% url 'question_list' %}">Przeglądaj pytania</a>
-                      <div class="dropdown-divider"></div>
-                      <a class="dropdown-item" href="{% url 'question_search' %}">Szukaj pytań</a>
-                      
-                    </div>
-                    </li> 
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
 
-                    <!-- first dropdown -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="" id="prepareDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Listy sprawdzające
-                        </a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                          <a class="dropdown-item" href="{% url 'checklist_list' %}">Przeglądaj listy</a>
-                          <div class="dropdown-divider"></div>
-                          <a class="dropdown-item" href="{% url 'checklist_add' %}">Nowa lista sprawdzająca</a>
-                        </div>
-                    </li>
+        <!-- zeroth dropdown -->
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="" id="prepareDropdown" role="button" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+            Pytania
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" href="{% url 'question_list' %}">Przeglądaj pytania</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="{% url 'question_search' %}">Szukaj pytań</a>
 
-                    <!-- second dropdown -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Kontrole
-                        </a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                          <a class="dropdown-item" href="{% url 'control_list' %}">Przeglądaj kontrole</a>
-                          <div class="dropdown-divider"></div> 
-                          <a class="dropdown-item" href="{% url 'control_add' %}">Nowa kontrola</a>
-                        </div>
-                    </li>
-                  </ul>
-
-                  <!-- informacja o zalogowanym użytkowniku -->
-                  {% if user.is_authenticated %}
-                  <div class="navbar-text float-right">Zalogowany: {{ user }}, {{ user.institutionemployee.institution.code }}</div>
-                  <a class="nav-link" href="/logout" tabindex="-1" aria-disabled="true">Wyloguj</a>
-                  {% else %}
-                  <div class="navbar-text float-right">Niezalogowany</div>
-                  <a class="nav-link" href="/login" tabindex="-1" aria-disabled="true">Zaloguj</a>
-                  {% endif %}          
-                </div>
-        </nav>
-    
-    {% if messages %}    
-          {% for message in messages%}
-          <div class="{{message.tags}} alert alert-info alert-dismissable">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><br>
-            {{message|safe}}
           </div>
-          {% endfor %}
-        </ul>
-    {% endif %}
+        </li>
 
-    <!-- CONTENT START -->
-    {% block content %}
-    {% endblock content %}
-    <!-- CONTENT END -->
+        <!-- first dropdown -->
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="" id="prepareDropdown" role="button" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+            Listy sprawdzające
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" href="{% url 'checklist_list' %}">Przeglądaj listy</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="{% url 'checklist_add' %}">Nowa lista sprawdzająca</a>
+          </div>
+        </li>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+        <!-- second dropdown -->
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+            Kontrole
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" href="{% url 'control_list' %}">Przeglądaj kontrole</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="{% url 'control_add' %}">Nowa kontrola</a>
+          </div>
+        </li>
+
+        <!-- linki do API i panelu admin-->
+        <li class="nav-item">
+          <a class="nav-link" href="/admin/" tabindex="-1" aria-disabled="true">Admin</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/api/" tabindex="-1" aria-disabled="true">API</a>
+        </li>
+
+      </ul>
+
+
+
+      <!-- informacja o zalogowanym użytkowniku -->
+      {% if user.is_authenticated %}
+      <div class="navbar-text float-right">Zalogowany: {{ user }}, {{ user.institutionemployee.institution.code }}</div>
+      <a class="nav-link" href="/logout" tabindex="-1" aria-disabled="true">Wyloguj</a>
+      {% else %}
+      <div class="navbar-text float-right">Niezalogowany</div>
+      <a class="nav-link" href="/login" tabindex="-1" aria-disabled="true">Zaloguj</a>
+      {% endif %}
+    </div>
+  </nav>
+
+  {% if messages %}
+  {% for message in messages%}
+  <div class="{{message.tags}} alert alert-info alert-dismissable">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><br>
+    {{message|safe}}
+  </div>
+  {% endfor %}
+  </ul>
+  {% endif %}
+
+  <!-- CONTENT START -->
+  {% block content %}
+  {% endblock content %}
+  <!-- CONTENT END -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+    crossorigin="anonymous"></script>
+  </script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+    crossorigin="anonymous"></script>
 
 </body>
+
 </html>
