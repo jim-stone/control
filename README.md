@@ -8,7 +8,7 @@ Aplikacja przewiduje dwa rodzaje użytkowników.
 
 Superkontroler:
 * nadzoruje cały system,
-* zarządza obiektami Pytanie, Blok, Instytucja, Użytkownik.
+* zarządza obiektami Pytanie, Blok, Instytucja, Użytkownik (z poziomu django admin)
 
 Kontroler:
 * przygotowuje listy sprawdzające i przeprowadza kontrole poprzez wypełnianie list sprawdzających. 
@@ -29,9 +29,11 @@ Javascript: jQuery
 git clone https://github.com/jim-stone/control.git
 python manage.py makemigrations
 python manage.py migrate
-(w przypadku problemów z migracją należy zakomentować kod w plikach *urls, views, forms*)
 python manage.py runserver
 ```
+
+## URL działającej aplikacji
+https://master-controller.herokuapp.com/
 
 ## Licencja
 
